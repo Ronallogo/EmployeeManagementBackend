@@ -45,10 +45,17 @@ public class TaskService {
     ///function to delete task
     public boolean delete(Long id){
         if(taskRepository.existsById(id)){
-            taskRepository.deleteById(id);
-            return true ;
+           try{
+               taskRepository.deleteById(id);
+               return true ;
+           }catch (Exception e){
+            throw  new RuntimeException("make sure that this task is not inserted");
+           }
         }
-        return false ;
+        else{
+            throw new TaskNotFoundException("this task do not exist or maybe already deleted")  ;
+        }
+
     }
 
 

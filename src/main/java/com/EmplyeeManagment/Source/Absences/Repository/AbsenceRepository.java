@@ -1,4 +1,8 @@
 package com.EmplyeeManagment.Source.Absences.Repository;
 
-public interface AbsenceRepository {
+import com.EmplyeeManagment.Source.Absences.Entity.Absence;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface AbsenceRepository extends JpaRepository<Absence , Long> {
+
 }

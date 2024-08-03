@@ -61,8 +61,12 @@ public class PositionService {
     /////function for deleting position
     public boolean delete(Long id){
         if(positionRepository.existsById(id)){
-            positionRepository.deleteById(id);
-            return true ;
+           try{
+               positionRepository.deleteById(id);
+               return true ;
+           }catch (Exception e){
+                throw  new RuntimeException("make sure that any task is inserted with this position");
+           }
         }
         else throw  new PositionNotFoundException(" this position  does not exist is maybe already  deleted !!");
     }

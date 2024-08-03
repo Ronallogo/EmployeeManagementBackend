@@ -12,6 +12,6 @@ import java.util.Optional;
 
 @EnableJpaRepositories
 public interface PositionRepository extends JpaRepository<Position, Long> {
-    @Query(value = "SELECT * FROM position WHERE name LIKE %:keyword%  ", nativeQuery = true)
+    @Query(value = "SELECT * FROM position WHERE position_name LIKE %:keyword%  ", nativeQuery = true)
     List<Position> researchByName(@Param("keyword") String keyword);
 }
