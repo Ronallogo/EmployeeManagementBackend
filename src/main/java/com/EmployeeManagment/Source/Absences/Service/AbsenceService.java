@@ -26,7 +26,10 @@ public class AbsenceService {
     ////// function to create an absences
     public Absence create(AbsenceRequest absence){
         /////make sure that this employee exist
-        Employee e = employeeRepository.findById(absence.getEmployee())
+        Employee e = employeeRepository.findByEmail(absence.getEmail()
+
+
+                )
                 .orElseThrow(()-> new EmployeeNotFoundException("this employee does not exist !!"));
 
         /////make the registration in the database
@@ -51,7 +54,7 @@ public class AbsenceService {
 
     public Absence edit(Long id , AbsenceRequest absence){
         /////make sure that this employee exist in case where it is updated
-        Employee e = employeeRepository.findById(absence.getEmployee())
+        Employee e = employeeRepository.findByEmail(absence.getEmail())
                 .orElseThrow(()-> new EmployeeNotFoundException("this employee does not exist !!"));
 
         /////make the registration in the database
@@ -80,5 +83,11 @@ public class AbsenceService {
     ///function to get all absence
     public List<Absence> all() {
       return   absenceRepository.findAll();
+    }
+
+
+    /////function to search some absences
+    public List<Absence> search(String keyword){
+      return   this.absenceRepository.search(keyword);
     }
 }

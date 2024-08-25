@@ -4,6 +4,7 @@ package com.EmployeeManagment.Source.TimeOff.Entity;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -13,36 +14,38 @@ import java.time.LocalDate;
 public class  TimeOffRequest {
 
     private Long id ;
-    private LocalDate beginning ;
-    private LocalDate end ;
+    private Date beginning ;
+    private Date end ;
     private String type ;
     private boolean status ;
-    private Long employee ;
+    private Long timeOffApply ;
 
 
     ////// constructor personalized for TimeOffRequest creation
     public TimeOffRequest(
-            LocalDate beginning ,
-            LocalDate end ,
+            Date beginning ,
+            Date end ,
             String type ,
             boolean status ,
-            Long employee
+
+            Long timeOffApply
     ){
         this.setBeginning(beginning);
-        this.setEmployee(employee);
+
         this.setEnd(end);
         this.setType(type);
         this.setStatus(status);
+        this.setTimeOffApply(timeOffApply);
 
     }
 
 
     /////// function to check the deviation between the date
-    public boolean periodTimeOffCheck(LocalDate beginning , LocalDate end){
+    public boolean periodTimeOffCheck(Date beginning , Date end){
             //// if beginning year is not greater than end year
           if(!( beginning.getYear() > end.getYear())){
               ////check the deviation between the months
-              return beginning.getMonthValue() > end.getMonthValue();
+              return beginning.getMonth() > end.getMonth();
           }
           else {
             return true ;

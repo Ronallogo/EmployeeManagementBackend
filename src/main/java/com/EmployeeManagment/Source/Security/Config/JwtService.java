@@ -6,11 +6,13 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Claims;
 
 import java.security.Key;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -64,6 +66,9 @@ public class JwtService {
             UserDetails userDetails,
             long expiration
     ) {
+        System.out.print(userDetails.getAuthorities().stream().toList().get(0));
+        Collection<? extends GrantedAuthority> roles = userDetails.getAuthorities();
+        extraClaims.put("roles", roles);
         return Jwts
                 .builder()
                 .setClaims(extraClaims)

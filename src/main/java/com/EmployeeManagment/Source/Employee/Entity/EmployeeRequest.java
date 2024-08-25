@@ -1,8 +1,10 @@
 package com.EmployeeManagment.Source.Employee.Entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 
 @Data
@@ -16,7 +18,8 @@ public class EmployeeRequest {
     private String name ;
     private String surname ;
     private String email;
-    private LocalDate birthday ;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
+    private Date birthday ;
     private String phone ;
     private Long position;
     private String address ;
@@ -26,7 +29,7 @@ public class EmployeeRequest {
             String surname ,
             String email ,
             String address,
-            LocalDate birthday ,
+            Date birthday ,
             String phone ,
             Long position
     ){

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/employee_manager/TaskScheduled")
+@RequestMapping("/api/auth/employee_manager/TaskScheduled")
 @CrossOrigin("*")
 public class TaskScheduleController {
 

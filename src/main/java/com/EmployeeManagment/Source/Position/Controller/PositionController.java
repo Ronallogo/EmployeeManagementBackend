@@ -13,7 +13,7 @@ import java.util.List;
 
 //////here is all endpoints of position module
 @RestController
-@RequestMapping("/api/employee_manager/position")
+@RequestMapping("/api/auth/employee_manager/position")
 @CrossOrigin("*")
 public class PositionController {
     /////variable that represent the service in this endpoint class

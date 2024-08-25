@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -132,4 +133,9 @@ public class AuthenticationService {
 
     }
 
+
+    public List<User> getAllUser(){
+        return repository.findAll() ;
     }
+
+}

@@ -2,8 +2,12 @@ package com.EmployeeManagment.Source.TimeOff.Service;
 
 
 import com.EmployeeManagment.Source.TimeOff.Entity.TimeOff;
+import com.EmployeeManagment.Source.TimeOff.Entity.TimeOffApply;
+import com.EmployeeManagment.Source.TimeOff.Entity.TimeOffApplyRequest;
 import com.EmployeeManagment.Source.TimeOff.Entity.TimeOffRequest;
+import com.EmployeeManagment.Source.TimeOff.Exception.TimeOffApplyNotFoundException;
 import com.EmployeeManagment.Source.TimeOff.Exception.TimeOffNotFoundException;
+import com.EmployeeManagment.Source.TimeOff.Repository.TimeOffApplyRepository;
 import com.EmployeeManagment.Source.TimeOff.Repository.TimeOffRepository;
 import com.EmployeeManagment.Source.Employee.Entity.Employee;
 import com.EmployeeManagment.Source.Employee.Exception.EmployeeNotFoundException;
@@ -22,13 +26,24 @@ public class TimeOffService {
     @Autowired
     TimeOffRepository TimeOffRepository;
     @Autowired
+    TimeOffApplyRepository timeOffApplyRepository;
+    @Autowired
     EmployeeRepository employeeRepository ;
 
+
+
     ////// function to create an TimeOffs
-    public TimeOff create(TimeOffRequest TimeOff){
-        /////make sure that this employee exist
-        Employee e = employeeRepository.findById(TimeOff.getEmployee())
-                .orElseThrow(()-> new EmployeeNotFoundException("this employee does not exist !!"));
+    public TimeOff create(TimeOffRequest TimeOff , Long timeOffApply){
+        TimeOffApply t = timeOffApplyRepository.findById(timeOffApply)
+                .orElseThrow(()-> new RuntimeException("the time off have to be apply first!!"));
+
+
+        if(!t.isValidate()){
+            throw  new RuntimeException("this time off is not valiated");
+        }
+
+
+
 
         /////// check if beginning year < end year
         if(TimeOff.periodTimeOffCheck(
@@ -46,7 +61,7 @@ public class TimeOffService {
                 TimeOff.getEnd(),
                 TimeOff.getType(),
                 TimeOff.isStatus(),
-                e
+                t
         ));
 
     }
@@ -64,9 +79,9 @@ public class TimeOffService {
 
     public TimeOff edit(Long id , TimeOffRequest TimeOff){
         /////make sure that this employee exist in case where it is updated
-        Employee e = employeeRepository.findById(TimeOff.getEmployee())
-                .orElseThrow(()-> new EmployeeNotFoundException("this employee does not exist !!"));
 
+        TimeOffApply t = timeOffApplyRepository.findById(TimeOff.getTimeOffApply())
+                .orElseThrow(()-> new TimeOffApplyNotFoundException("this timeOff have to be apply first!!!!"));
 
         ////check the deviation between the beginning and the end in case of update
         if(TimeOff.periodTimeOffCheck(
@@ -86,7 +101,8 @@ public class TimeOffService {
                 TimeOff.getEnd(),
                 TimeOff.getType(),
                 TimeOff.isStatus(),
-                e
+
+                t
         ));
     }
 
@@ -107,5 +123,9 @@ public class TimeOffService {
     ///function to get all TimeOff
     public List<TimeOff> all() {
         return   TimeOffRepository.findAll();
+    }
+
+    public List<TimeOff> search(String keyword){
+        return TimeOffRepository.search(keyword);
     }
 }

@@ -4,6 +4,7 @@ package com.EmployeeManagment.Source.Task_Inserted.Service;
 import com.EmployeeManagment.Source.Task.Entity.Task;
 import com.EmployeeManagment.Source.Task.Repository.TaskRepository;
 import com.EmployeeManagment.Source.Task_Inserted.Entity.TaskInserted;
+import com.EmployeeManagment.Source.Task_Inserted.Exception.DuplicateTaskInsertedException;
 import com.EmployeeManagment.Source.Task_Inserted.Exception.TaskInsertedNotFoundException;
 import com.EmployeeManagment.Source.Task_Inserted.Repository.TaskInsertedRepository;
 import com.EmployeeManagment.Source.Position.Entity.Position;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 
 //////taskInserted service
@@ -39,10 +41,30 @@ public class TaskInsertedService {
         Position p = positionRepository.findById(taskInsertedRequest.getPosition())
                 .orElseThrow(()-> new PositionNotFoundException("position not found to make insertion"));
 
+        ////make sure that this task inserted is unique
+        if(!checkUnity(p.getId() , t.getId())){
+            throw  new DuplicateTaskInsertedException("this task is already inserted");
+        }
         ////  make the TaskInserted registration
+        return taskInsertedRepository.save(new TaskInserted(
+                p ,
+                t ,
+                taskInsertedRequest.getDate_insertion()
+                ,  taskInsertedRequest.getGain_task_post()
+        )) ;
 
-        return taskInsertedRepository.save(new TaskInserted(p , t , taskInsertedRequest.getGain_task_post())) ;
 
+    }
+
+    public boolean checkUnity(Long id_position , Long id_task){
+        List<TaskInserted> taskList = taskInsertedRepository.findAll() ;
+
+        for (TaskInserted t: taskList) {
+                if(Objects.equals(t.getTask().getId(), id_task) && Objects.equals(t.getPosition().getId(), id_position)){
+                    return false ;
+                }
+        }
+        return true ;
 
     }
 
@@ -66,7 +88,15 @@ public class TaskInsertedService {
         Position p = positionRepository.findById(taskInsertedRequest.getPosition())
                 .orElseThrow(()-> new PositionNotFoundException("position not found to make the update working !!"));
 
-        return taskInsertedRepository.save(new TaskInserted( id , p , t , taskInsertedRequest.getGain_task_post())) ;
+        if(!checkUnity(p.getId() , t.getId())){
+            throw  new DuplicateTaskInsertedException("this task is already inserted");
+        }
+        return taskInsertedRepository.save(new TaskInserted(
+                id ,
+                p ,
+                t ,
+                taskInsertedRequest.getDate_insertion(),
+                taskInsertedRequest.getGain_task_post())) ;
 
     }
     ///function to find all taskInserted

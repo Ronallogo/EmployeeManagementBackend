@@ -13,7 +13,7 @@ import java.util.List;
 
 //////here is all endpoints of task module
 @RestController
-@RequestMapping("/api/employee_manager/task")
+@RequestMapping("/api/auth/employee_manager/task")
 @CrossOrigin("*")
 public class TaskController {
     /////variable that represent the service in this endpoint class

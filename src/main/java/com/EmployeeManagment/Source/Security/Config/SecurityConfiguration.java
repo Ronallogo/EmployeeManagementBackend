@@ -30,16 +30,16 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfiguration {
 
     private static   final  String[] WHITE_LIST_URL = {
-            "/api/employee_manager/auth/**",
-            "/api/employee_manager/absence/**",
-            "/api/employee_manager/content/**",
-            "/api/employee_manager/employee/**",
-            "/api/employee_manager/payStub/**",
-            "/api/employee_manager/position/**",
-            "/api/employee_manager/task/**",
-            "/api/employee_manager/taskInserted/**",
-            "/api/employee_manager/taskSchedule/**",
-            "/api/employee_manager/timeOff/**",
+            "/api/auth/**",
+            "/api/auth/employee_manager/absence/**",
+            "/api/auth/employee_manager/content/**",
+            "/api/auth/employee_manager/employee/**",
+            "/api/auth/employee_manager/payStub/**",
+            "/api/auth/employee_manager/position/**",
+            "/api/auth/employee_manager/task/**",
+            "/api/auth/employee_manager/taskInserted/**",
+            "/api/auth/employee_manager/taskSchedule/**",
+            "/api/auth/employee_manager/timeOff/**",
 
     };
 
@@ -55,11 +55,11 @@ public class SecurityConfiguration {
             .authorizeHttpRequests(req ->
                 req.requestMatchers(WHITE_LIST_URL)
                     .permitAll()
-                        .requestMatchers("/api/employee_manager/**").hasAnyRole(ADMIN.name() , USER.name())
-                        .requestMatchers(GET , "/api/employee_manager/**").hasAnyRole(ADMIN_READ.name() , USER_READ.name())
-                        .requestMatchers(POST , "/api/employee_manager/**").hasAnyRole(ADMIN_CREATE.name() , USER_CREATE.name())
-                        .requestMatchers(PUT , "/api/employee_manager/**").hasAnyRole(ADMIN_UPDATE.name() , USER_UPDATE.name())
-                        .requestMatchers(DELETE , "/api/employee_manager/**").hasAnyRole(ADMIN_DELETE.name())
+                        .requestMatchers("/api/auth/employee_manager/**").hasAnyRole(ADMIN.name() , USER.name())
+                        .requestMatchers(GET , "/api/auth/employee_manager/**").hasAnyRole(ADMIN_READ.name() , USER_READ.name())
+                        .requestMatchers(POST , "/api/auth/employee_manager/**").hasAnyRole(ADMIN_CREATE.name() , USER_CREATE.name())
+                        .requestMatchers(PUT , "/api/auth/employee_manager/**").hasAnyRole(ADMIN_UPDATE.name() , USER_UPDATE.name())
+                        .requestMatchers(DELETE , "/api/auth/employee_manager/**").hasAnyRole(ADMIN_DELETE.name())
                         .anyRequest()
                         .authenticated()
 
@@ -68,7 +68,7 @@ public class SecurityConfiguration {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter , UsernamePasswordAuthenticationFilter.class)
                 .logout(logout ->
-                            logout.logoutUrl("/api/employee_manager/auth/logout")
+                            logout.logoutUrl("/api/auth/employee_manager/logout")
                                     .addLogoutHandler(logoutHandler)
                                     .logoutSuccessHandler((request, response, authentication) ->  SecurityContextHolder.clearContext())
 

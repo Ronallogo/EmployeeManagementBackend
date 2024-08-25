@@ -6,8 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EmployeeRepository  extends JpaRepository<Employee, Long> {
     @Query(value = "SELECT * FROM employee WHERE name LIKE %:keyword% OR surname LIKE  %:keyword%", nativeQuery = true)
     List<Employee> researchEmployee(@Param("keyword") String keyword);
+
+    Optional<Employee> findByEmail(String email);
 }

@@ -107,4 +107,11 @@ public class EmployeeService {
         return employeeRepository.researchEmployee(keyword);
     }
 
+    public Employee getByEmail(String email){
+        return this.employeeRepository.findByEmail(email)
+                         .orElseThrow(()->new EmployeeNotFoundException("employee not found !!!"));
+    }
+
+
 }
+

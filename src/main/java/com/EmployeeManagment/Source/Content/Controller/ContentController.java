@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/employee_manager/content")
+@RequestMapping("/api/auth/employee_manager/content")
 @CrossOrigin("*")
 public class ContentController {
 

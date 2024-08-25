@@ -52,6 +52,10 @@ public class TaskScheduledService {
 
         Content c = contentRepository.findById(taskScheduledRequest.getContent())
                 .orElseThrow(()-> new ContentNotFoundException("content not found !!"));
+
+        if(c.getStatus() == "publié"){
+            throw new RuntimeException("this content is already published !!!");
+        }
         /////make the task_schedule registration
         return  taskScheduledRepository.save( new TaskScheduled(
                     t , ///taskInserted

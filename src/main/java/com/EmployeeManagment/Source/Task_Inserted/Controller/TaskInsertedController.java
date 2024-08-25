@@ -14,7 +14,7 @@ import java.util.List;
 
 ///////// all TaskInsertedInserted endpoint
 @RestController
-@RequestMapping("/api/employee_manager/taskInserted")
+@RequestMapping("/api/auth/employee_manager/taskInserted")
 @CrossOrigin("*")
 public class TaskInsertedController {
 
@@ -27,6 +27,7 @@ public class TaskInsertedController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TaskInserted> saveTaskInserted(@RequestBody TaskInsertedRequest taskInsertedRequest){
+        System.out.print(taskInsertedRequest.getDate_insertion());
         TaskInserted TaskInsertedAdded = taskInsertedService.create(taskInsertedRequest);
         return  new ResponseEntity<TaskInserted>(TaskInsertedAdded, HttpStatus.CREATED);
     }

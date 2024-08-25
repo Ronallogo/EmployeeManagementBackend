@@ -16,7 +16,7 @@ public class AbsenceRequest {
     private Date absence_day ;
     private String reason ;
 
-    private Long employee ;
+    private String email;
 
 
 
@@ -24,11 +24,11 @@ public class AbsenceRequest {
     public AbsenceRequest(
            Date day ,
            String reason,
-           Long employee
+           String employee
     )
     {
         this.setAbsence_day(day);
         this.setReason(reason);
-        this.setEmployee(employee);
+        this.setEmail(employee);
     }
 }

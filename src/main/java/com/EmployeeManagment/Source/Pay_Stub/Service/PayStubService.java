@@ -49,6 +49,15 @@ public class PayStubService {
         Employee e = employeeRepository.findById(payStubRequest.getEmployee())
                 .orElseThrow(()-> new EmployeeNotFoundException("this employee not exist !!!"));
 
+
+        PayStub p = new PayStub(
+               payStubRequest.getPaymentDate() ,
+               payStubRequest.getBonus() ,
+               e,
+               totalAmount ,
+               nbrTask );
+
+
         return payStubRepository.save(new PayStub(
                 payStubRequest.getPaymentDate() ,
                 payStubRequest.getBonus() ,

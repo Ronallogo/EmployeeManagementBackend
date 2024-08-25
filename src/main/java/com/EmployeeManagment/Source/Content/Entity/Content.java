@@ -13,7 +13,9 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-@Table(name = "Content")
+@Table(name = "Content", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"title"})
+})
 public class Content implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,10 +24,10 @@ public class Content implements Serializable {
     private String theme ;
     private String nature ;
     private String language ;
-    private LocalDate creation_date ;
+    private Date creation_date ;
     private String status ;
 
-    Content(String title , String theme , String nature , String language , LocalDate creation_date){
+    Content(String title , String theme , String nature , String language , Date creation_date){
         this.setLanguage(language);
         this.setTheme(theme);
         this.setTitle(title);

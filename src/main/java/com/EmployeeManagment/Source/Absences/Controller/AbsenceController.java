@@ -3,6 +3,7 @@ package com.EmployeeManagment.Source.Absences.Controller;
 
 import com.EmployeeManagment.Source.Absences.Entity.Absence;
 import com.EmployeeManagment.Source.Absences.Entity.AbsenceRequest;
+import com.EmployeeManagment.Source.Position.Entity.Position;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/employee_manager/absence")
+@RequestMapping("/api/auth/employee_manager/absence")
 @CrossOrigin("*")
 public class AbsenceController {
     @Autowired
@@ -56,6 +57,12 @@ public class AbsenceController {
     @DeleteMapping(value = "/delete/{id}")
     public  boolean deleteAbsence(@PathVariable Long id){
         return  AbsenceService.delete(id);
+    }
+
+
+    @GetMapping(value = "/search/{keyword}")
+    public List<Absence> searchAbsence(@PathVariable String keyword){
+        return AbsenceService.search(keyword);
     }
 
 

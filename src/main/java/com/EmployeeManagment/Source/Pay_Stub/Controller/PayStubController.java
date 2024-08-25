@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/employee_manager/payStub")
+@RequestMapping("/api/auth/employee_manager/payStub")
 @CrossOrigin("*")
 public class PayStubController {
 

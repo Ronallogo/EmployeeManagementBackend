@@ -5,12 +5,15 @@ import com.EmployeeManagment.Source.Pay_Stub.Entity.PayStub;
 import com.EmployeeManagment.Source.Position.Entity.Position;
 import com.EmployeeManagment.Source.Task_Scheduled.Entity.TaskScheduled;
 import com.EmployeeManagment.Source.TimeOff.Entity.TimeOff;
+import com.EmployeeManagment.Source.TimeOff.Entity.TimeOffApply;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -19,7 +22,9 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "Employee")
+@Table(name = "Employee", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"name", "surname", "email"})
+})
 public class Employee  implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +32,8 @@ public class Employee  implements Serializable {
     private String name ;
     private String surname ;
     private String email;
-    private LocalDate birthday ;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
+    private Date birthday ;
     private String phone ;
     private String address;
 
@@ -42,7 +48,7 @@ public class Employee  implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    private List<TimeOff> timeOffs ;
+    private List<TimeOffApply> timeOffApplies ;
 
     @JsonIgnore
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
@@ -58,7 +64,7 @@ public class Employee  implements Serializable {
             String surname ,
             String email ,
             String address ,
-            LocalDate birthday ,
+            Date birthday ,
             String phone ,
             Position position
     ){
@@ -79,7 +85,7 @@ public class Employee  implements Serializable {
             String surname,
             String email,
             String address,
-            LocalDate birthday,
+            Date birthday,
             String phone,
             Position p
     ) {

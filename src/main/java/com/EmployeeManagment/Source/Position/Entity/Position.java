@@ -15,7 +15,9 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "Position")
+@Table(name = "Position", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"position_name", "position_description"})
+})
 public class Position implements Serializable {
     @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id ;

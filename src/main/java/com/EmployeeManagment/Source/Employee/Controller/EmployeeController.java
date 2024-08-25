@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/employee_manager/employee")
+@RequestMapping("/api/auth/employee_manager/employee")
 @CrossOrigin("*")
 public class EmployeeController {
     @Autowired
@@ -50,6 +50,12 @@ public class EmployeeController {
     public ResponseEntity<Employee> editEmployee(@PathVariable Long id  , @RequestBody  EmployeeRequest employee){
          Employee  employeeEdited =  employeeService.edit(id ,  employee);
         return  new ResponseEntity<Employee>( employeeEdited , HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/email/{email}")
+    public ResponseEntity<Employee> getEmployeeByEmail(@PathVariable  String email){
+        Employee  employeeFound =  employeeService.getByEmail(email);
+        return  new ResponseEntity<Employee>( employeeFound , HttpStatus.OK);
     }
 
 
