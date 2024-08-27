@@ -28,6 +28,8 @@ public interface TaskScheduledRepository extends JpaRepository<TaskScheduled, Lo
     */
     @Query(value = "SELECT task_inserted_id FROM task_scheduled WHERE employee_id = :employee", nativeQuery = true)
     List<Long> listTaskDid(@Param("employee") Long employee);
+    @Query(value = "SELECT * FROM task_scheduled WHERE employee_id = :employee", nativeQuery = true)
+    List<TaskScheduled> listTaskDidForOne(@Param("employee") Long employee);
 
 
 

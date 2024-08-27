@@ -5,10 +5,12 @@ import com.EmployeeManagment.Source.Employee.Entity.Employee;
 import com.EmployeeManagment.Source.Employee.Exception.EmployeeNotFoundException;
 import com.EmployeeManagment.Source.Pay_Stub.Entity.PayStub;
 import com.EmployeeManagment.Source.Pay_Stub.Entity.PayStubRequest;
+import com.EmployeeManagment.Source.Pay_Stub.Exception.PayStubNotFoundException;
 import com.EmployeeManagment.Source.Pay_Stub.Repository.PayStubRepository;
 import com.EmployeeManagment.Source.Employee.Repository.EmployeeRepository;
 import com.EmployeeManagment.Source.Position.Exception.PositionNotFoundException;
 import com.EmployeeManagment.Source.Task_Inserted.Repository.TaskInsertedRepository;
+import com.EmployeeManagment.Source.Task_Scheduled.Entity.TaskScheduled;
 import com.EmployeeManagment.Source.Task_Scheduled.Repository.TaskScheduledRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,6 +122,17 @@ public class PayStubService {
                 return true ;
         }
         else throw  new PositionNotFoundException(" this pay_stub  does not exist is maybe already  deleted !!");
+    }
+
+
+    public List<PayStub> search(String keyword){
+        return this.payStubRepository.searchByEmployee(keyword);
+    }
+
+
+    public PayStub getPayStubForOneEmployee(String email){
+        return this.payStubRepository.getForOne(email)
+                .orElseThrow(()-> new PayStubNotFoundException("pay_stub not found"));
     }
 
 

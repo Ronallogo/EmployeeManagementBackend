@@ -125,6 +125,11 @@ public class TaskScheduledService {
             throw new EntityNotFoundException("this task is not scheduled !!!") ;
         }
     }
+
+    public List<TaskScheduled> taskDidByOne(Long employee){
+        return  taskScheduledRepository.listTaskDidForOne(employee);
+
+    }
 }
 
 

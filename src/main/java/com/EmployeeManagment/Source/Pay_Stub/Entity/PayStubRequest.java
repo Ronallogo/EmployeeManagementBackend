@@ -1,5 +1,6 @@
 package com.EmployeeManagment.Source.Pay_Stub.Entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -20,7 +21,8 @@ public class PayStubRequest {
     private Integer amount = 0;
     private Integer nbrTasks = 0;
     private Integer bonus = 0;
-    private LocalDate paymentDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
+    private   Date paymentDate;
     private Long employee;
 
 
@@ -28,7 +30,7 @@ public class PayStubRequest {
             Integer amount,
             Integer nbrTasks,
             Integer bonus,
-            LocalDate paymentDate,
+            Date paymentDate,
             Long employee
     ) {
         this.setPaymentDate(paymentDate);
@@ -38,7 +40,7 @@ public class PayStubRequest {
         this.setAmount(amount);
 
     }
-    public PayStubRequest(Long employee , LocalDate paymentDate){
+    public PayStubRequest(Long employee , Date paymentDate){
         this.setEmployee(employee);
         this.setPaymentDate(paymentDate);
     }

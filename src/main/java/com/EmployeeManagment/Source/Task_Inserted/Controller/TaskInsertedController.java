@@ -45,6 +45,11 @@ public class TaskInsertedController {
     public ResponseEntity<List<TaskInserted>> allTaskInserted(){
         List<TaskInserted> listTaskInserted = taskInsertedService.all() ;
         return new ResponseEntity<List<TaskInserted>>(listTaskInserted , HttpStatus.OK);
+    }   /////endpoint allowing to get all TaskInserted for one position
+    @GetMapping(value = "/allForOnePosition/{id}")
+    public ResponseEntity<List<TaskInserted>> allTaskInserted(@PathVariable Long id){
+        List<TaskInserted> listTaskInserted = taskInsertedService.allTaskForOnePosition(id) ;
+        return new ResponseEntity<List<TaskInserted>>(listTaskInserted , HttpStatus.OK);
     }
 
 

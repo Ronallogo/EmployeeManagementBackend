@@ -14,9 +14,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-@Table(name = "Absences", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"absence"})
-})
+
 public class Absence implements Serializable {
     @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id ;

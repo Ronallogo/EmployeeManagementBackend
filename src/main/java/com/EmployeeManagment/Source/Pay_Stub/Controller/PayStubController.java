@@ -46,6 +46,18 @@ public class PayStubController {
     }
 
 
+    @GetMapping(value = "/search/{keyword}")
+    public ResponseEntity<List<PayStub>> SearchPayStub(@PathVariable String keyword){
+        List<PayStub> listPayStub = PayStubService.search(keyword) ;
+        return new ResponseEntity<List<PayStub>>(listPayStub , HttpStatus.OK);
+    }
+    @GetMapping(value = "/getPayStubForOne/{email}")
+    public ResponseEntity<PayStub> getPayStub(@PathVariable String email){
+        PayStub PayStub = PayStubService.getPayStubForOneEmployee(email) ;
+        return new ResponseEntity<PayStub>(PayStub , HttpStatus.OK);
+    }
+
+
     /////endpoint allowing to update  one PayStub by id
     @PutMapping(value = "/edit/{id}")
     public ResponseEntity<PayStub> editPayStub(@PathVariable Long id  , @RequestBody PayStubRequest PayStubRequest){
@@ -59,5 +71,7 @@ public class PayStubController {
     public  boolean deletePayStub(@PathVariable Long id){
         return PayStubService.delete(id);
     }
+
+
 
 }

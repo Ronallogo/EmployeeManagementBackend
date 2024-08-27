@@ -120,6 +120,10 @@ public class TaskInsertedService {
         }
     }
 
+    public List<TaskInserted> allTaskForOnePosition(Long position){
+            return  this.taskInsertedRepository.allTaskForOnePosition(position);
+    }
+
 
 
 

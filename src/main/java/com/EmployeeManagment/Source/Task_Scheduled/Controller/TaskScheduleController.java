@@ -44,6 +44,12 @@ public class TaskScheduleController {
         List<TaskScheduled> listTaskScheduled = TaskScheduledService.all() ;
         return new ResponseEntity<List<TaskScheduled>>(listTaskScheduled , HttpStatus.OK);
     }
+    /////endpoint allowing to get all TaskScheduled for an employee
+    @GetMapping(value = "/taskForOne/{employee_id}")
+    public ResponseEntity<List<TaskScheduled>> allTaskScheduledForOne(@PathVariable Long employee_id){
+        List<TaskScheduled> listTaskScheduled = TaskScheduledService.taskDidByOne(employee_id) ;
+        return new ResponseEntity<List<TaskScheduled>>(listTaskScheduled , HttpStatus.OK);
+    }
 
 
     /////endpoint allowing to update  one TaskScheduled by id
