@@ -11,7 +11,7 @@ public interface TaskInsertedRepository extends JpaRepository<TaskInserted , Lon
     /**
      *th
      * */
-    @Query(value = "SELECT  t.gain_task_post FROM task_inserted AS t" +
+    @Query(value = "SELECT  t.gain_task_post FROM task_inserted AS t " +
             "WHERE id = :id_task", nativeQuery = true)
     public Integer getGainForOne(@Param("id_task")Long id);
 

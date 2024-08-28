@@ -18,9 +18,9 @@ import java.util.Date;
 public class PayStubRequest {
 
     private Long id;
-    private Integer amount = 0;
-    private Integer nbrTasks = 0;
-    private Integer bonus = 0;
+    private Integer amount ;
+    private Integer nbrTasks ;
+    private Integer bonus ;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
     private   Date paymentDate;
     private Long employee;

@@ -42,7 +42,7 @@ public class TaskInsertedService {
                 .orElseThrow(()-> new PositionNotFoundException("position not found to make insertion"));
 
         ////make sure that this task inserted is unique
-        if(!checkUnity(p.getId() , t.getId())){
+        if(!checkUnity(p.getId() , t.getId() , taskInsertedRequest.getGain_task_post())){
             throw  new DuplicateTaskInsertedException("this task is already inserted");
         }
         ////  make the TaskInserted registration
@@ -56,11 +56,15 @@ public class TaskInsertedService {
 
     }
 
-    public boolean checkUnity(Long id_position , Long id_task){
+    public boolean checkUnity(Long id_position , Long id_task ,Integer gain){
         List<TaskInserted> taskList = taskInsertedRepository.findAll() ;
 
         for (TaskInserted t: taskList) {
-                if(Objects.equals(t.getTask().getId(), id_task) && Objects.equals(t.getPosition().getId(), id_position)){
+                if(
+                        Objects.equals(t.getTask().getId(), id_task) &&
+                                Objects.equals(t.getPosition().getId(), id_position) &&
+                                Objects.equals(t.getGain_task_post(), gain)
+                ){
                     return false ;
                 }
         }
@@ -88,7 +92,7 @@ public class TaskInsertedService {
         Position p = positionRepository.findById(taskInsertedRequest.getPosition())
                 .orElseThrow(()-> new PositionNotFoundException("position not found to make the update working !!"));
 
-        if(!checkUnity(p.getId() , t.getId())){
+        if(!checkUnity(p.getId() , t.getId() ,taskInsertedRequest.getGain_task_post() )){
             throw  new DuplicateTaskInsertedException("this task is already inserted");
         }
         return taskInsertedRepository.save(new TaskInserted(

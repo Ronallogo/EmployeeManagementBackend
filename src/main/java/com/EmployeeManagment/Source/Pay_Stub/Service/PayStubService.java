@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -39,13 +40,13 @@ public class PayStubService {
         //// check for bonus ... here we take the previous + 5000 in the case where
         // nbrTask would be a multiple of 5
 
-        if(nbrTask % 5 == 0) payStubRequest.setBonus(payStubRequest.getBonus() +  5000);
+        if(nbrTask % 5 == 0 && nbrTask > 0) payStubRequest.setBonus(payStubRequest.getBonus() +  5000);
 
         ////fetch list of all  id_task did for the employee
         List<Long> listTaskId = taskScheduledRepository.listTaskDid(payStubRequest.getEmployee());
 
         /// set the total amount
-        Integer totalAmount = this.FindAmount(listTaskId);
+        Integer totalAmount = this.FindAmount(listTaskId) + payStubRequest.getAmount();
 
         ////  fetch the  employee
         Employee e = employeeRepository.findById(payStubRequest.getEmployee())
@@ -71,14 +72,37 @@ public class PayStubService {
     }
 
     public PayStub edit(Long id ,PayStubRequest payStubRequest){
+
+            PayStub oldRegister = this.payStubRepository.findById(id).orElseThrow();
         ////check the employee
         Employee e = employeeRepository.findById(payStubRequest.getEmployee())
                 .orElseThrow(()-> new EmployeeNotFoundException("this employee not exist !!!"));
 
-       ////make updating
+
+        ////set the value nbrTask
+        Integer nbrTask = taskScheduledRepository.sumTaskDid(payStubRequest.getEmployee()) ;
+
+        System.out.print("nombre de tache ++" + nbrTask );
+        //// check for bonus ... here we take the previous + 5000 in the case where
+        // nbrTask would be a multiple of 5
+
+        if(nbrTask % 5 == 0 && nbrTask > 0) payStubRequest.setBonus(payStubRequest.getBonus() +  5000);
+
+        ////fetch list of all  id_task did for the employee
+        List<Long> listTaskId = taskScheduledRepository.listTaskDid(payStubRequest.getEmployee());
+
+
+
+
+        /// set the total amount
+        Integer totalAmount =    this.FindAmount(listTaskId) ;
+
+
+            System.out.print("une fois encore "+totalAmount);
+        ////make updating
         return payStubRepository.save(new PayStub(
                 id ,
-                payStubRequest.getAmount(),
+                 totalAmount,
                 payStubRequest.getNbrTasks(),
                 payStubRequest.getBonus(),
                 payStubRequest.getPaymentDate() ,
@@ -106,14 +130,17 @@ public class PayStubService {
 
 
     ///// function to make a total amount
-    public Integer FindAmount(List<Long> longList){
-        Integer amount = 0 ;
+    public Integer FindAmount(List<Long> longList   ){
 
+        Integer amount = 30000 ;
         /// process to find the total amount
-        for (Long i: longList ) {
-            amount += taskInsertedRepository.getGainForOne(i);
+        for ( int i = 0 ; i < longList.size() ; i++) {
+            amount += taskInsertedRepository.getGainForOne(longList.get(i));
+            System.out.print("id - >" + i);
         }
+        System.out.print("montant -> "+amount);
         return amount ;
+
     }
     public boolean delete(Long id){
         if(payStubRepository.existsById(id)){
@@ -135,7 +162,9 @@ public class PayStubService {
                 .orElseThrow(()-> new PayStubNotFoundException("pay_stub not found"));
     }
 
-
+    public Integer FindExtraLength(List<Long> firtList , List<Long> secondList){
+            return firtList.size() - secondList.size() ;
+    }
 
 
 }
