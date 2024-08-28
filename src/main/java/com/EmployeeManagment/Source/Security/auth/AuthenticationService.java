@@ -7,6 +7,7 @@ import com.EmployeeManagment.Source.Security.Token.TokenRepository;
 import com.EmployeeManagment.Source.Security.Token.TypeToken;
 import com.EmployeeManagment.Source.Security.entities.User;
 import com.EmployeeManagment.Source.Security.entities.UserRepository;
+import com.EmployeeManagment.Source.Security.entities.UserResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -138,4 +141,68 @@ public class AuthenticationService {
         return repository.findAll() ;
     }
 
+    public AuthenticationResponse editUserWithPassword(Long id ,   RegisterRequest userData){
+
+        var user = User.builder()
+                .id(id)
+                .firstname(userData.getFirstname())
+                .lastname(userData.getLastname())
+                .email(userData.getEmail())
+                .password(passwordEncoder.encode(userData.getPassword()))
+                .role(userData.getRole())
+                .build();
+
+        var saveUser = repository.save(user);
+        var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+
+        saveUserToken(saveUser , jwtToken);
+        return  AuthenticationResponse.builder()
+                .accessToken(jwtToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+
+    public UserResponse findUser(String email){
+       User user =   this.repository.findByEmail(email)
+                .orElseThrow(()-> new RuntimeException("user not found"));
+
+       return UserResponse.builder()
+               .id(user.getId())
+               .firstname(user.getFirstname())
+               .lastname(user.getLastname())
+               .email(user.getEmail())
+               .role(user.getRole().name()).build() ;
+    }
+
+
+    public AuthenticationResponse  editUserWithoutPassword(Long id ,   UserResponse userData){
+
+        var userFetched = this.repository.findByEmail(userData.getEmail())
+                .orElseThrow(()-> new UsernameNotFoundException("user not found!!!"));
+
+        var user = User.builder()
+                .id(id)
+                .firstname(userData.getFirstname())
+                .lastname(userData.getLastname())
+                .email(userData.getEmail())
+                .password(passwordEncoder.encode(userFetched.getPassword()))
+                .role(userFetched.getRole())
+                .build();
+
+        var saveUser = repository.save(user);
+        var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+
+        saveUserToken(saveUser , jwtToken);
+        return  AuthenticationResponse.builder()
+                .accessToken(jwtToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
 }
+
+
+
