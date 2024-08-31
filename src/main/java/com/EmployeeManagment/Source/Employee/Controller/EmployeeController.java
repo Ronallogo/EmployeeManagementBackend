@@ -48,6 +48,7 @@ public class EmployeeController {
     /////endpoint allowing to update  one  employee by id
     @PutMapping(value = "/edit/{id}")
     public ResponseEntity<Employee> editEmployee(@PathVariable Long id  , @RequestBody  EmployeeRequest employee){
+         System.out.print(employee);
          Employee  employeeEdited =  employeeService.edit(id ,  employee);
         return  new ResponseEntity<Employee>( employeeEdited , HttpStatus.OK);
     }

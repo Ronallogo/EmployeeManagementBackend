@@ -41,4 +41,11 @@ public class TimeOffApplyRequest {
         this.setEnd(end);
         this.setType(type);
     }
+
+
+    /////// function to check the deviation between the date
+    public boolean periodTimeOffCheck(Date beginning , Date end){
+        //// if beginning year is not greater than end year
+        return beginning.before(end) ;
+    }
 }

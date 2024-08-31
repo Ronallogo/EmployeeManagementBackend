@@ -68,6 +68,12 @@ public class AuthenticationController {
         return ResponseEntity.ok(e);
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Boolean> deleteUser(@PathVariable Long id){
+        var e =  this.service.delete(id);
+        return ResponseEntity.ok(e);
+    }
+
 
 
 

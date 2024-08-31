@@ -64,6 +64,11 @@ public class PayStubController {
         PayStub PayStubEdited = PayStubService.edit(id , PayStubRequest);
         return  new ResponseEntity<PayStub>(PayStubEdited , HttpStatus.OK);
     }
+    @PutMapping(value = "/refresh/{id}")
+    public ResponseEntity<PayStub> refreshPayStub(@PathVariable Long id  , @RequestBody PayStubRequest PayStubRequest){
+        PayStub PayStubEdited = PayStubService.refresh(id , PayStubRequest);
+        return  new ResponseEntity<PayStub>(PayStubEdited , HttpStatus.OK);
+    }
 
 
     ///////endpoint allowing to delete one PayStub

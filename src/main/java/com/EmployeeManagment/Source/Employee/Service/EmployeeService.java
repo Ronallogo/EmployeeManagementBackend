@@ -59,12 +59,15 @@ public class EmployeeService {
 
     ////function to update an employee
     public Employee edit(Long id ,   EmployeeRequest employee){
+
+        System.out.print(employee + "******------******" + id);
         ///check if the position exist in case where  position is updated
         Position p  =   positionRepository.findById(employee.getPosition())
                 .orElseThrow(()-> new PositionNotFoundException("position not found to make employee registration !!")) ;
 
         Employee e = employeeRepository.findById(id)
                 .orElseThrow(()-> new EmployeeNotFoundException("this employee do not exist"));
+
 
 
         ////make the employee update

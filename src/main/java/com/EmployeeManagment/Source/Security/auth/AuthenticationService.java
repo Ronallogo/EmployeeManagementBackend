@@ -144,14 +144,14 @@ public class AuthenticationService {
     public AuthenticationResponse editUserWithPassword(Long id ,   RegisterRequest userData){
 
         var user = User.builder()
-                .id(id)
+
                 .firstname(userData.getFirstname())
                 .lastname(userData.getLastname())
                 .email(userData.getEmail())
                 .password(passwordEncoder.encode(userData.getPassword()))
                 .role(userData.getRole())
                 .build();
-
+        user.setId(id);
         var saveUser = repository.save(user);
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
@@ -179,18 +179,18 @@ public class AuthenticationService {
 
     public AuthenticationResponse  editUserWithoutPassword(Long id ,   UserResponse userData){
 
-        var userFetched = this.repository.findByEmail(userData.getEmail())
+        var userFetched = this.repository.findById(userData.getId())
                 .orElseThrow(()-> new UsernameNotFoundException("user not found!!!"));
 
         var user = User.builder()
-                .id(id)
+
                 .firstname(userData.getFirstname())
                 .lastname(userData.getLastname())
                 .email(userData.getEmail())
                 .password(passwordEncoder.encode(userFetched.getPassword()))
                 .role(userFetched.getRole())
                 .build();
-
+        user.setId(id);
         var saveUser = repository.save(user);
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
@@ -200,6 +200,18 @@ public class AuthenticationService {
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
+    }
+
+
+    public boolean delete(Long id){
+        if(this.repository.existsById(id)){
+            this.repository.deleteById(id);
+            return  true;
+        }
+        else{
+            throw  new RuntimeException("user not found ");
+        }
+
     }
 
 }

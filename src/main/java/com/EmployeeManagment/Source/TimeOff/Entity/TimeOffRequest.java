@@ -42,14 +42,8 @@ public class  TimeOffRequest {
 
     /////// function to check the deviation between the date
     public boolean periodTimeOffCheck(Date beginning , Date end){
-            //// if beginning year is not greater than end year
-          if(!( beginning.getYear() > end.getYear())){
-              ////check the deviation between the months
-              return beginning.getMonth() > end.getMonth();
-          }
-          else {
-            return true ;
-          }
+        //// if beginning year is not greater than end year
+        return beginning.before(end) ;
     }
 
 

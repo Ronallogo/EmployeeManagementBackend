@@ -11,7 +11,7 @@ public interface AbsenceRepository extends JpaRepository<Absence , Long> {
 
 
     @Query(value = """
-       SELECT * FROM absences WHERE employee_id IN\s
+       SELECT * FROM absence WHERE employee_id IN\s
        (SELECT id FROM employee WHERE name LIKE CONCAT('%', :keyword, '%')\s
        OR surname LIKE CONCAT('%', :keyword, '%'))
        """, nativeQuery = true)

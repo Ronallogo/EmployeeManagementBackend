@@ -29,11 +29,19 @@ public class TimeOffApplyService {
                 .orElseThrow(()->   new EmployeeNotFoundException(" employee not found"));
 
 
+        System.out.print(t.getBeginning() + " et ");
+        System.out.print(t.getEnd());
+        /////// check if beginning year < end year
+        if( t.getBeginning().compareTo(t.getEnd()) > 0)
+        {
+            throw new RuntimeException("check the deviation between the beginning date and the end date !!");
+        }
+
         return  this.timeOffApplyRepository.save(
                 new TimeOffApply(
                         e,
-                        t.getType() ,
                         t.getApply(),
+                        t.getType() ,
                         t.getEnd() ,
                         t.getBeginning(),
                         t.isValidate()
@@ -54,6 +62,16 @@ public class TimeOffApplyService {
 
         Employee e = employeeRepository.findById(t.getEmployee())
                 .orElseThrow(()->   new EmployeeNotFoundException(" employee not found"));
+
+
+        /////// check if beginning year < end year
+        if(t.periodTimeOffCheck(
+                t.getBeginning(),
+                t.getEnd()
+        ))
+        {
+            throw new RuntimeException("check the deviation between the beginning date and the end date !!");
+        }
 
         return  this.timeOffApplyRepository.save(
                 new TimeOffApply(

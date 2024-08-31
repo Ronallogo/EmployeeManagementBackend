@@ -83,7 +83,11 @@ public class TaskScheduledService {
         Content c = contentRepository.findById(t.getContent())
                 .orElseThrow(()-> new ContentNotFoundException("content not found !!"));
 
-        /////make the task_schedule updating
+
+        if(t.getBeginning().isAfter(t.getEnd()))
+        {
+            throw new RuntimeException("check the deviation between the beginning date and the end date !!");
+        }  /////make the task_schedule updating
         return  taskScheduledRepository.save( new TaskScheduled(
                         id ,
                         task , ///taskInserted

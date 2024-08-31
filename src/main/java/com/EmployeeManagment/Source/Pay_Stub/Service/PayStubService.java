@@ -103,7 +103,7 @@ public class PayStubService {
         return payStubRepository.save(new PayStub(
                 id ,
                  totalAmount,
-                payStubRequest.getNbrTasks(),
+                nbrTask,
                 payStubRequest.getBonus(),
                 payStubRequest.getPaymentDate() ,
                 e
@@ -164,6 +164,37 @@ public class PayStubService {
 
     public Integer FindExtraLength(List<Long> firtList , List<Long> secondList){
             return firtList.size() - secondList.size() ;
+    }
+
+
+
+
+    public PayStub refresh(Long id ,PayStubRequest payStubRequest){
+
+        PayStub oldRegister = this.payStubRepository.findById(id).orElseThrow();
+        ////check the employee
+        Employee e = employeeRepository.findById(payStubRequest.getEmployee())
+                .orElseThrow(()-> new EmployeeNotFoundException("this employee not exist !!!"));
+
+
+
+
+
+        ////fetch list of all  id_task did for the employee
+        List<Long> listTaskId = taskScheduledRepository.listTaskDid(payStubRequest.getEmployee());
+        /////delete all task schedule by this employee
+        this.taskScheduledRepository.deleteAllById(listTaskId);
+        ////make refresh
+        return payStubRepository.save(new PayStub(
+                    id ,
+                    30000,
+                    0,
+                     5000,
+                    payStubRequest.getPaymentDate() ,
+                    e
+                )
+
+        );
     }
 
 
