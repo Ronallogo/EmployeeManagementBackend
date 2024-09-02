@@ -17,4 +17,8 @@ public interface AbsenceRepository extends JpaRepository<Absence , Long> {
        """, nativeQuery = true)
     List<Absence> search(@Param("keyword") String keyword);
 
+
+    @Query(value = "SELECT COUNT(id) FROM absence a WHERE  a.employee_id = :id_e;  " , nativeQuery = true)
+    Integer AllAbsencesForOne(@Param("id_e") Long employee);
+
 }

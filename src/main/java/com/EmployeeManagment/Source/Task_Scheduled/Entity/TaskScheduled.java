@@ -4,6 +4,7 @@ package com.EmployeeManagment.Source.Task_Scheduled.Entity;
 import com.EmployeeManagment.Source.Content.Entity.Content;
 import com.EmployeeManagment.Source.Employee.Entity.Employee;
 import com.EmployeeManagment.Source.Task_Inserted.Entity.TaskInserted;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,10 +29,10 @@ public class TaskScheduled implements Serializable {
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee ;
-
-    private LocalDate  beginning ;
-
-    private LocalDate end ;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
+    private Date  beginning ;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
+    private Date end ;
 
     private boolean status ;
     @ManyToOne
@@ -42,8 +43,8 @@ public class TaskScheduled implements Serializable {
      public   TaskScheduled(
              TaskInserted taskInserted  ,
              Employee employee,
-             LocalDate  beginning,
-             LocalDate end ,
+             Date  beginning,
+             Date end ,
              Content content
 
      ){
@@ -55,7 +56,7 @@ public class TaskScheduled implements Serializable {
 
      }
 
-    public TaskScheduled(Long id, TaskInserted t, Employee e, LocalDate beginning, LocalDate end, Content c) {
+    public TaskScheduled(Long id, TaskInserted t, Employee e, Date beginning, Date end, Content c) {
         this.setId(id);
         this.setTaskInserted(t);
         this.setEmployee(e);

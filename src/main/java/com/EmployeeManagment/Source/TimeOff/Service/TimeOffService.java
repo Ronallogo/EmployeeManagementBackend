@@ -33,8 +33,8 @@ public class TimeOffService {
 
 
     ////// function to create an TimeOffs
-    public TimeOff create(TimeOffRequest TimeOff , Long timeOffApply){
-        TimeOffApply t = timeOffApplyRepository.findById(timeOffApply)
+    public TimeOff create(TimeOffRequest TimeOff){
+        TimeOffApply t = timeOffApplyRepository.findById(TimeOff.getTimeOffApply())
                 .orElseThrow(()-> new RuntimeException("the time off have to be apply first!!"));
 
 
@@ -44,13 +44,11 @@ public class TimeOffService {
 
 
 
+        System.out.print(TimeOff.getBeginning()  +" et " + TimeOff.getEnd());
+
 
         /////// check if beginning year < end year
-        if(TimeOff.periodTimeOffCheck(
-                TimeOff.getBeginning(),
-                TimeOff.getEnd()
-        ))
-        {
+        if( TimeOff.getBeginning().after(TimeOff.getEnd())) {
             throw new RuntimeException("check the deviation between the beginning date and the end date !!");
         }
 
@@ -80,19 +78,12 @@ public class TimeOffService {
     public TimeOff edit(Long id , TimeOffRequest TimeOff){
         /////make sure that this employee exist in case where it is updated
 
-        TimeOffApply t = timeOffApplyRepository.findById(TimeOff.getTimeOffApply())
-                .orElseThrow(()-> new TimeOffApplyNotFoundException("this timeOff have to be apply first!!!!"));
-
-        ////check the deviation between the beginning and the end in case of update
-        if(TimeOff.periodTimeOffCheck(
-                TimeOff.getBeginning(),
-                TimeOff.getEnd()
-        ))
-        {
+        if( TimeOff.getBeginning().after(TimeOff.getEnd())) {
             throw new RuntimeException("check the deviation between the beginning date and the end date !!");
         }
 
-
+        TimeOffApply t = timeOffApplyRepository.findById(TimeOff.getTimeOffApply())
+                .orElseThrow(()-> new TimeOffApplyNotFoundException("this timeOff have to be apply first!!!!"));
 
         /////make the registration in the database
         return TimeOffRepository.save(new TimeOff(

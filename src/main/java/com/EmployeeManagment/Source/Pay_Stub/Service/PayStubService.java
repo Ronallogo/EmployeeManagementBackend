@@ -12,6 +12,7 @@ import com.EmployeeManagment.Source.Position.Exception.PositionNotFoundException
 import com.EmployeeManagment.Source.Task_Inserted.Repository.TaskInsertedRepository;
 import com.EmployeeManagment.Source.Task_Scheduled.Entity.TaskScheduled;
 import com.EmployeeManagment.Source.Task_Scheduled.Repository.TaskScheduledRepository;
+import com.sun.tools.jconsole.JConsoleContext;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -80,7 +81,7 @@ public class PayStubService {
 
 
         ////set the value nbrTask
-        Integer nbrTask = taskScheduledRepository.sumTaskDid(payStubRequest.getEmployee()) ;
+        Integer nbrTask = taskScheduledRepository.sumTaskDidForPayStub(payStubRequest.getEmployee()) ;
 
         System.out.print("nombre de tache ++" + nbrTask );
         //// check for bonus ... here we take the previous + 5000 in the case where
@@ -89,7 +90,7 @@ public class PayStubService {
         if(nbrTask % 5 == 0 && nbrTask > 0) payStubRequest.setBonus(payStubRequest.getBonus() +  5000);
 
         ////fetch list of all  id_task did for the employee
-        List<Long> listTaskId = taskScheduledRepository.listTaskDid(payStubRequest.getEmployee());
+        List<Long> listTaskId = taskScheduledRepository.listTaskDidForPayStub(payStubRequest.getEmployee());
 
 
 
@@ -136,7 +137,9 @@ public class PayStubService {
         /// process to find the total amount
         for ( int i = 0 ; i < longList.size() ; i++) {
             amount += taskInsertedRepository.getGainForOne(longList.get(i));
-            System.out.print("id - >" + i);
+            System.out.print("id - > " + i+" ");
+            System.out.print("gain - >" + longList.get(i)+" ");
+
         }
         System.out.print("montant -> "+amount);
         return amount ;

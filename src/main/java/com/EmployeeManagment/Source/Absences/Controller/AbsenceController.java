@@ -33,8 +33,14 @@ public class AbsenceController {
     @GetMapping(value = "/get/{id}")
     public ResponseEntity<Absence> getAbsence(@PathVariable Long id){
         Absence  AbsenceGot =  AbsenceService.get(id);
-        return  new ResponseEntity<Absence>( AbsenceGot , HttpStatus.FOUND);
+        return  new ResponseEntity<Absence>( AbsenceGot , HttpStatus.OK);
     }
+
+    @GetMapping(value = "/getForOne/{id}")
+    public ResponseEntity<Integer> getNbrAbsenceForOne(@PathVariable Long id){
+        return  new ResponseEntity<Integer>(this.AbsenceService.findNbrAbsenceForOne(id) , HttpStatus.OK);
+    }
+
 
 
     /////endpoint allowing to get all  Absences

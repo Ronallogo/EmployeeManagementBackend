@@ -1,6 +1,7 @@
 package com.EmployeeManagment.Source.TimeOff.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -14,7 +15,9 @@ import java.util.Date;
 public class  TimeOffRequest {
 
     private Long id ;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
     private Date beginning ;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
     private Date end ;
     private String type ;
     private boolean status ;

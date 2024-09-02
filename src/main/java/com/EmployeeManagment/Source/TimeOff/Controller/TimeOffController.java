@@ -28,11 +28,11 @@ public class TimeOffController {
 
 
     ////endpoint allowing to make an  TimeOff registration
-    @RequestMapping(value = "/create/{id}",method = RequestMethod.POST,
+    @RequestMapping(value = "/create",method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TimeOff> saveTimeOff(@RequestBody TimeOffRequest TimeOff , @PathVariable Long idApply){
-        TimeOff TimeOffAdded =  timeOffService.create(TimeOff, idApply);
+    public ResponseEntity<TimeOff> saveTimeOff(@RequestBody TimeOffRequest TimeOff ){
+        TimeOff TimeOffAdded =  timeOffService.create(TimeOff);
         return  new ResponseEntity<TimeOff>( TimeOffAdded, HttpStatus.CREATED);
     }
 

@@ -56,6 +56,11 @@ public class TaskScheduledService {
         if(c.getStatus() == "publié"){
             throw new RuntimeException("this content is already published !!!");
         }
+
+
+        if( taskScheduledRequest.getBeginning().after(taskScheduledRequest.getEnd())) {
+            throw new RuntimeException("check the deviation between the beginning date and the end date !!");
+        }
         /////make the task_schedule registration
         return  taskScheduledRepository.save( new TaskScheduled(
                     t , ///taskInserted
@@ -84,7 +89,7 @@ public class TaskScheduledService {
                 .orElseThrow(()-> new ContentNotFoundException("content not found !!"));
 
 
-        if(t.getBeginning().isAfter(t.getEnd()))
+        if(t.getBeginning().after(t.getEnd()))
         {
             throw new RuntimeException("check the deviation between the beginning date and the end date !!");
         }  /////make the task_schedule updating
@@ -133,6 +138,9 @@ public class TaskScheduledService {
     public List<TaskScheduled> taskDidByOne(Long employee){
         return  taskScheduledRepository.listTaskDidForOne(employee);
 
+    }
+    public Integer nbrTaskForOne(Long employee){
+        return this.taskScheduledRepository.sumTaskDid(employee);
     }
 }
 

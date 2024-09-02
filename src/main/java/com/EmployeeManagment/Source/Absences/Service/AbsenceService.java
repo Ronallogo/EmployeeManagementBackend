@@ -90,4 +90,8 @@ public class AbsenceService {
     public List<Absence> search(String keyword){
       return   this.absenceRepository.search(keyword);
     }
+
+    public Integer findNbrAbsenceForOne(Long employee){
+       return this.absenceRepository.AllAbsencesForOne(employee);
+    }
 }

@@ -32,8 +32,7 @@ public class TimeOffApplyService {
         System.out.print(t.getBeginning() + " et ");
         System.out.print(t.getEnd());
         /////// check if beginning year < end year
-        if( t.getBeginning().compareTo(t.getEnd()) > 0)
-        {
+        if( t.getBeginning().after(t.getEnd())) {
             throw new RuntimeException("check the deviation between the beginning date and the end date !!");
         }
 
@@ -42,8 +41,8 @@ public class TimeOffApplyService {
                         e,
                         t.getApply(),
                         t.getType() ,
-                        t.getEnd() ,
                         t.getBeginning(),
+                        t.getEnd() ,
                         t.isValidate()
                 )
         );
@@ -60,30 +59,25 @@ public class TimeOffApplyService {
 
     public TimeOffApply update(Long id ,  TimeOffApplyRequest t){
 
+        TimeOffApply ta = this.timeOffApplyRepository.findById(id).orElseThrow(()-> new RuntimeException("demande not found!!"));
+
         Employee e = employeeRepository.findById(t.getEmployee())
                 .orElseThrow(()->   new EmployeeNotFoundException(" employee not found"));
 
 
         /////// check if beginning year < end year
-        if(t.periodTimeOffCheck(
-                t.getBeginning(),
-                t.getEnd()
-        ))
-        {
+        if( t.getBeginning().after(t.getEnd())) {
             throw new RuntimeException("check the deviation between the beginning date and the end date !!");
         }
 
-        return  this.timeOffApplyRepository.save(
-                new TimeOffApply(
-                        id ,
-                        t.getEnd() ,
-                        t.getBeginning(),
-                        e,
-                        t.getType() ,
-                        t.getApply(),
-                        t.isValidate()
-                )
-        );
+        ta.setEnd(t.getEnd());
+        ta.setBeginning(t.getBeginning());
+        ta.setEmployee(e);
+        ta.setValidate(t.isValidate());
+        ta.setType(t.getType());
+        return  this.timeOffApplyRepository.save(ta);
+
+
     }
 
     public List<TimeOffApply> all(){
@@ -95,6 +89,7 @@ public class TimeOffApplyService {
         if(!timeOffApplyRepository.existsById(id)){
             throw  new RuntimeException("this time Off Apply do not exist !!!");
         }else {
+            timeOffApplyRepository.deleteById(id);
             return true ;
         }
     }
