@@ -8,6 +8,8 @@ import com.EmployeeManagment.Source.Position.Entity.Position;
 import com.EmployeeManagment.Source.Position.Repository.PositionRepository;
 import com.EmployeeManagment.Source.Employee.Entity.Employee;
 import com.EmployeeManagment.Source.Position.Exception.PositionNotFoundException;
+import com.EmployeeManagment.Source.Security.entities.User;
+import com.EmployeeManagment.Source.Security.entities.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,12 +27,18 @@ public class EmployeeService {
     @Autowired
     private PositionRepository positionRepository ;
 
+    @Autowired
+    private UserRepository userRepository ;
+
 
     ////function for create an employee
     public Employee create(EmployeeRequest employee){
         ///check if the position exist
             Position p  =   positionRepository.findById(employee.getPosition())
                     .orElseThrow(()-> new PositionNotFoundException("position not found to make employee registration !!")) ;
+
+            User user = userRepository.findByEmail(employee.getEmail())
+                    .orElseThrow(()-> new RuntimeException(" user not found "));
 
             ////make the employee registration
             return  employeeRepository.save(new Employee(
@@ -40,7 +48,8 @@ public class EmployeeService {
                     employee.getAddress() ,
                     employee.getBirthday() ,
                     employee.getPhone(),
-                    p
+                    p ,
+                    user
             ));
     }
 
@@ -54,6 +63,8 @@ public class EmployeeService {
 
     ///function  to get all employee
     public List<Employee> all (){
+
+
         return employeeRepository.findAll() ;
     }
 
@@ -68,6 +79,8 @@ public class EmployeeService {
         Employee e = employeeRepository.findById(id)
                 .orElseThrow(()-> new EmployeeNotFoundException("this employee do not exist"));
 
+        User user = userRepository.findByEmail(employee.getEmail())
+                .orElseThrow(()-> new RuntimeException(" user not found "));
 
 
         ////make the employee update
@@ -79,7 +92,8 @@ public class EmployeeService {
                 employee.getAddress() ,
                 employee.getBirthday() ,
                 employee.getPhone(),
-                p
+                p ,
+                user
         ));
     }
 

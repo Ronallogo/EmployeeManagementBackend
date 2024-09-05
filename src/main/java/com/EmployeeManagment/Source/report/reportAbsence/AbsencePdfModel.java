@@ -1,10 +1,9 @@
-package com.EmployeeManagment.Source.report.reportTask;
+package com.EmployeeManagment.Source.report.reportAbsence;
 
 
-import com.EmployeeManagment.Source.Position.Entity.Position;
-import com.EmployeeManagment.Source.Position.Repository.PositionRepository;
-import com.EmployeeManagment.Source.Task.Entity.Task;
-import com.EmployeeManagment.Source.Task.Repository.TaskRepository;
+import com.EmployeeManagment.Source.Absences.Entity.Absence;
+import com.EmployeeManagment.Source.Absences.Repository.AbsenceRepository;
+import com.EmployeeManagment.Source.TimeOff.Entity.TimeOff;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.pdf.PdfPCell;
@@ -19,16 +18,27 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
-public class TaskPdfModel {
-
+public class AbsencePdfModel {
 
     @Autowired
-    private TaskRepository taskRepository ;
+    private AbsenceRepository absenceRepository ;
+    /*
+            @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id ;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
+    private Date absence_day ;
+    private String reason ;
+    @ManyToOne
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee ;
+
+
+    */
+
     public void writeTableHeader(PdfPTable table){
         PdfPCell cell = new PdfPCell();
         cell.setBackgroundColor(Color.darkGray);
         cell.setPadding(5);
-
 
         com.lowagie.text.Font font = FontFactory.getFont(FontFactory.COURIER_BOLD);
 
@@ -36,24 +46,41 @@ public class TaskPdfModel {
 
         cell.setPhrase(new Phrase("ID" , font));
         table.addCell(cell);
-        cell.setPhrase(new Phrase("TACHE" , font));
+
+        cell.setPhrase(new Phrase("JOUR DE L'ABSENCE" , font));
         table.addCell(cell);
-        cell.setPhrase(new Phrase("DESCRIPTION" , font));
+
+        cell.setPhrase(new Phrase("RAISON DE L'ABSENCE" , font));
         table.addCell(cell);
+
+        cell.setPhrase(new Phrase("EMPLOYÉ" , font));
+        table.addCell(cell);
+
+
+
+
+
 
 
     }
-    public void writeTableData(PdfPTable table){
-        List<Task> list  = this.taskRepository.findAll() ;
 
-        for(Task task : list){
-            table.addCell(String.valueOf(task.getId())) ;
-            table.addCell(task.getTask_name()) ;
-            table.addCell(task.getTask_description()) ;
+
+
+    public void writeTableData(PdfPTable table) {
+        List<Absence> list = this.absenceRepository.findAll();
+
+        for (Absence a : list) {
+            table.addCell(String.valueOf(a.getId()));
+            table.addCell(String.valueOf(a.getAbsence_day()));
+            table.addCell(a.getReason());
+            table.addCell(a.getEmployee().getName() + " " + a.getEmployee().getSurname());
+
 
         }
 
     }
+
+
 
     public void export(HttpServletResponse response) throws IOException {
         Document document  = new Document(PageSize.A4);
@@ -66,16 +93,16 @@ public class TaskPdfModel {
         font.setSize(18);
         font.setColor(Color.BLACK);
 
-        Paragraph p = new Paragraph("Listes des taches"  , font);
+        Paragraph p = new Paragraph("Listes des absences"  , font);
         p.setAlignment(Paragraph.ALIGN_CENTER);
 
         document.add(p);
 
 
-        PdfPTable table = new PdfPTable(3);
+        PdfPTable table = new PdfPTable(4);
 
         table.setWidthPercentage(100f);
-        table.setWidths(new float[] {1.5f,3.5f,3.5f});
+        table.setWidths(new float[] {1.5f,3.5f,3.5f,3.5f});
         table.setSpacingBefore(10);
         writeTableHeader(table);
         writeTableData(table);
@@ -84,6 +111,12 @@ public class TaskPdfModel {
 
         document.close();
     }
+
+
+
+
+
+
 
 
 }

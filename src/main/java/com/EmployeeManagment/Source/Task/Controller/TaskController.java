@@ -3,12 +3,18 @@ package com.EmployeeManagment.Source.Task.Controller;
 
 import com.EmployeeManagment.Source.Task.Entity.Task;
 import com.EmployeeManagment.Source.Task.Service.TaskService;
+import com.EmployeeManagment.Source.report.reportTask.TaskPdfModel;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 //////here is all endpoints of task module
@@ -19,6 +25,9 @@ public class TaskController {
     /////variable that represent the service in this endpoint class
     @Autowired
     private TaskService taskService ;
+
+    @Autowired
+    private TaskPdfModel  taskPdfModel;
 
     ////endpoint allowing to make a Task registration
     @RequestMapping(value = "/create",method = RequestMethod.POST,
@@ -64,6 +73,24 @@ public class TaskController {
     @GetMapping(value = "/search/{keyword}")
     public List<Task> searchTask(@PathVariable String keyword){
         return taskService.search(keyword);
+    }
+
+
+    @GetMapping(value = "/report/pdf")
+    public void reportPdf(HttpServletResponse response) throws IOException {
+        response.setContentType("application/pdf");
+
+        // Define a DateFormat for the filename
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        String currentDateTime = dateFormat.format(new Date());
+
+        // Set the Content-Disposition header to suggest a filename for download
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=liste_tache_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+
+        // Call your method to write the PDF content to the response output stream
+        this.taskPdfModel.export(response);
     }
 
         

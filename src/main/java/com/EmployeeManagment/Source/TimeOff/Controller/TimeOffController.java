@@ -8,13 +8,19 @@ import com.EmployeeManagment.Source.TimeOff.Entity.TimeOffApplyRequest;
 import com.EmployeeManagment.Source.TimeOff.Service.TimeOffApplyService;
 import com.EmployeeManagment.Source.TimeOff.Service.TimeOffService;
 import com.EmployeeManagment.Source.TimeOff.Entity.TimeOffRequest;
+import com.EmployeeManagment.Source.report.reportConge.TimeOffPdfModel;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.sql.Time;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -25,6 +31,9 @@ public class TimeOffController {
     TimeOffService timeOffService ;
     @Autowired
     TimeOffApplyService timeOffApplyService ;
+
+    @Autowired
+     TimeOffPdfModel timeOffPdfModel;
 
 
     ////endpoint allowing to make an  TimeOff registration
@@ -94,6 +103,24 @@ public class TimeOffController {
     @GetMapping(value = "/search/{keyword}")
     public List<TimeOff> searchContent(@PathVariable String keyword){
         return  timeOffService.search(keyword);
+    }
+
+
+    @GetMapping(value = "/report/pdf")
+    public void reportPdf(HttpServletResponse response) throws IOException {
+        response.setContentType("application/pdf");
+
+        // Define a DateFormat for the filename
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        String currentDateTime = dateFormat.format(new Date());
+
+        // Set the Content-Disposition header to suggest a filename for download
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=liste_congé_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+
+        // Call your method to write the PDF content to the response output stream
+        this.timeOffPdfModel.export(response);
     }
     
 }

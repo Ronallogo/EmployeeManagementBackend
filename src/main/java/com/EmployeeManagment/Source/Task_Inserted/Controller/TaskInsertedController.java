@@ -4,12 +4,18 @@ package com.EmployeeManagment.Source.Task_Inserted.Controller;
 import com.EmployeeManagment.Source.Task_Inserted.Entity.TaskInserted;
 import com.EmployeeManagment.Source.Task_Inserted.Service.TaskInsertedService;
 import com.EmployeeManagment.Source.Task_Inserted.Entity.TaskInsertedRequest;
+import com.EmployeeManagment.Source.report.reportTaskInserted.TaskInsertedModel;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 ///////// all TaskInsertedInserted endpoint
@@ -21,6 +27,9 @@ public class TaskInsertedController {
     /////variable that represent the service in this endpoint class
     @Autowired
     private TaskInsertedService taskInsertedService ;
+
+    @Autowired
+    private TaskInsertedModel taskInsertedModel ;
 
     ////endpoint allowing to make a TaskInserted registration
     @RequestMapping(value = "/create",method = RequestMethod.POST,
@@ -65,6 +74,24 @@ public class TaskInsertedController {
     @DeleteMapping(value = "/delete/{id}")
     public  boolean deleteTaskInserted(@PathVariable Long id){
         return taskInsertedService.delete(id);
+    }
+
+
+    @GetMapping(value = "/report/pdf")
+    public void reportPdf(HttpServletResponse response) throws IOException {
+        response.setContentType("application/pdf");
+
+        // Define a DateFormat for the filename
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        String currentDateTime = dateFormat.format(new Date());
+
+        // Set the Content-Disposition header to suggest a filename for download
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=liste_tache_insérées_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+
+        // Call your method to write the PDF content to the response output stream
+        this.taskInsertedModel.export(response);
     }
 
 }

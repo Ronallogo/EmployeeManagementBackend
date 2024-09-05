@@ -1,5 +1,6 @@
 package com.EmployeeManagment.Source.Employee.Entity;
 
+import com.EmployeeManagment.Source.Security.entities.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
@@ -23,6 +24,7 @@ public class EmployeeRequest {
     private String phone ;
     private Long position;
     private String address ;
+    private User  user;
     ////// constructor personalize for creation a employee
     public EmployeeRequest(
             String name ,
@@ -40,6 +42,29 @@ public class EmployeeRequest {
        this.setPhone(phone);
        this.setPosition(position);
        this.setAddress(address);
+
+    }
+
+
+
+    public EmployeeRequest(
+            String name ,
+            String surname ,
+            String email ,
+            String address,
+            Date birthday ,
+            String phone ,
+            Long position ,
+            User user
+    ){
+        this.setName(name);
+        this.setSurname(surname);
+        this.setBirthday(birthday);
+        this.setEmail(email);
+        this.setPhone(phone);
+        this.setPosition(position);
+        this.setAddress(address);;
+        this.setUser(user);
 
     }
 }

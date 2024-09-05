@@ -4,12 +4,18 @@ package com.EmployeeManagment.Source.Absences.Controller;
 import com.EmployeeManagment.Source.Absences.Entity.Absence;
 import com.EmployeeManagment.Source.Absences.Entity.AbsenceRequest;
 import com.EmployeeManagment.Source.Position.Entity.Position;
+import com.EmployeeManagment.Source.report.reportAbsence.AbsencePdfModel;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -18,6 +24,9 @@ import java.util.List;
 public class AbsenceController {
     @Autowired
     com.EmployeeManagment.Source.Absences.Service.AbsenceService AbsenceService ;
+
+    @Autowired
+    AbsencePdfModel absencePdfModel ;
 
 
     ////endpoint allowing to make an  Absence registration
@@ -71,5 +80,23 @@ public class AbsenceController {
         return AbsenceService.search(keyword);
     }
 
+
+
+    @GetMapping(value = "/report/pdf")
+    public void reportPdf(HttpServletResponse response) throws IOException {
+        response.setContentType("application/pdf");
+
+        // Define a DateFormat for the filename
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        String currentDateTime = dateFormat.format(new Date());
+
+        // Set the Content-Disposition header to suggest a filename for download
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=liste_absence_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+
+        // Call your method to write the PDF content to the response output stream
+        this.absencePdfModel.export(response);
+    }
 
 }

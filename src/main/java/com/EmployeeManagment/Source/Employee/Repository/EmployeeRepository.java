@@ -13,4 +13,7 @@ public interface EmployeeRepository  extends JpaRepository<Employee, Long> {
     List<Employee> researchEmployee(@Param("keyword") String keyword);
 
     Optional<Employee> findByEmail(String email);
+
+    @Query(value = "SELECT * FROM employee WHERE  user_id = :id"  , nativeQuery = true)
+    Optional<Employee> findEmployeeByIdUser(@Param("id")Long id);
 }

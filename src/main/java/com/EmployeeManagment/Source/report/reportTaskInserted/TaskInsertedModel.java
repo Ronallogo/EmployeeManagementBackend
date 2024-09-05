@@ -1,10 +1,10 @@
-package com.EmployeeManagment.Source.report.reportTask;
+package com.EmployeeManagment.Source.report.reportTaskInserted;
 
 
-import com.EmployeeManagment.Source.Position.Entity.Position;
-import com.EmployeeManagment.Source.Position.Repository.PositionRepository;
-import com.EmployeeManagment.Source.Task.Entity.Task;
-import com.EmployeeManagment.Source.Task.Repository.TaskRepository;
+import com.EmployeeManagment.Source.Employee.Entity.Employee;
+import com.EmployeeManagment.Source.Employee.Repository.EmployeeRepository;
+import com.EmployeeManagment.Source.Task_Inserted.Entity.TaskInserted;
+import com.EmployeeManagment.Source.Task_Inserted.Repository.TaskInsertedRepository;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.pdf.PdfPCell;
@@ -19,16 +19,24 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
-public class TaskPdfModel {
+public class TaskInsertedModel {
+    /*
+     private Long id ;
+    private Long position ;
+    private Long task ;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
+    private Date date_insertion ;
+    private Integer gain_task_post ;
 
+
+    */
 
     @Autowired
-    private TaskRepository taskRepository ;
+    private TaskInsertedRepository taskRepository ;
     public void writeTableHeader(PdfPTable table){
         PdfPCell cell = new PdfPCell();
         cell.setBackgroundColor(Color.darkGray);
         cell.setPadding(5);
-
 
         com.lowagie.text.Font font = FontFactory.getFont(FontFactory.COURIER_BOLD);
 
@@ -36,20 +44,34 @@ public class TaskPdfModel {
 
         cell.setPhrase(new Phrase("ID" , font));
         table.addCell(cell);
+
+        cell.setPhrase(new Phrase("POSTE" , font));
+        table.addCell(cell);
+
         cell.setPhrase(new Phrase("TACHE" , font));
         table.addCell(cell);
-        cell.setPhrase(new Phrase("DESCRIPTION" , font));
+
+        cell.setPhrase(new Phrase("DATE D'INSERTION" , font));
         table.addCell(cell);
+
+        cell.setPhrase(new Phrase("GAIN DE TACHE POUR LE POSTE" , font));
+        table.addCell(cell);
+
+
 
 
     }
     public void writeTableData(PdfPTable table){
-        List<Task> list  = this.taskRepository.findAll() ;
+        List<TaskInserted> list  = this.taskRepository.findAll() ;
 
-        for(Task task : list){
-            table.addCell(String.valueOf(task.getId())) ;
-            table.addCell(task.getTask_name()) ;
-            table.addCell(task.getTask_description()) ;
+        for(TaskInserted t: list){
+            table.addCell(String.valueOf(t.getId())) ;
+            table.addCell(t.getPosition().getPosition_name()) ;
+            table.addCell(t.getTask().getTask_name()) ;
+            table.addCell(String.valueOf(t.getDate_insertion())) ;
+            table.addCell(String.valueOf(t.getGain_task_post())) ;
+             ;
+
 
         }
 
@@ -66,16 +88,15 @@ public class TaskPdfModel {
         font.setSize(18);
         font.setColor(Color.BLACK);
 
-        Paragraph p = new Paragraph("Listes des taches"  , font);
+        Paragraph p = new Paragraph("Listes des taches insérées"  , font);
         p.setAlignment(Paragraph.ALIGN_CENTER);
 
         document.add(p);
 
 
-        PdfPTable table = new PdfPTable(3);
-
+        PdfPTable table = new PdfPTable(5);
         table.setWidthPercentage(100f);
-        table.setWidths(new float[] {1.5f,3.5f,3.5f});
+        table.setWidths(new float[] {1.5f,3.5f,3.5f,3.5f,3.5f});
         table.setSpacingBefore(10);
         writeTableHeader(table);
         writeTableData(table);
@@ -84,6 +105,9 @@ public class TaskPdfModel {
 
         document.close();
     }
+
+
+
 
 
 }

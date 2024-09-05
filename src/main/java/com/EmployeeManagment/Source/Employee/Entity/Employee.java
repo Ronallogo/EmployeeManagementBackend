@@ -3,6 +3,7 @@ package com.EmployeeManagment.Source.Employee.Entity;
 import com.EmployeeManagment.Source.Absences.Entity.Absence;
 import com.EmployeeManagment.Source.Pay_Stub.Entity.PayStub;
 import com.EmployeeManagment.Source.Position.Entity.Position;
+import com.EmployeeManagment.Source.Security.entities.User;
 import com.EmployeeManagment.Source.Task_Scheduled.Entity.TaskScheduled;
 import com.EmployeeManagment.Source.TimeOff.Entity.TimeOff;
 import com.EmployeeManagment.Source.TimeOff.Entity.TimeOffApply;
@@ -41,6 +42,10 @@ public class Employee  implements Serializable {
     @ManyToOne
     @JoinColumn(name = "position_id", nullable = false)
     private Position position;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
     @JsonIgnore
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
@@ -100,4 +105,53 @@ public class Employee  implements Serializable {
         this.setPosition(p);
 
     }
+
+
+
+    public Employee(
+
+            String name,
+            String surname,
+            String email,
+            String address,
+            Date birthday,
+            String phone,
+            Position p ,
+            User user
+    ) {
+
+        this.setName(name);
+        this.setSurname(surname);
+        this.setBirthday(birthday);
+        this.setEmail(email);
+        this.setPhone(phone);
+        this.setPosition(p);
+        this.setAddress(address);
+        this.setPosition(p);
+        this.setUser(user);
+
+    }
+
+    public Employee(
+            Long id,
+            String name,
+            String surname,
+            String email,
+            String address,
+            Date birthday,
+            String phone,
+            Position p,
+            User user
+    ) {
+
+        this.setId(id);
+        this.setName(name);
+        this.setSurname(surname);
+        this.setBirthday(birthday);
+        this.setEmail(email);
+        this.setPhone(phone);
+        this.setPosition(p);
+        this.setAddress(address);
+        this.setPosition(p);
+        this.setUser(user); }
 }

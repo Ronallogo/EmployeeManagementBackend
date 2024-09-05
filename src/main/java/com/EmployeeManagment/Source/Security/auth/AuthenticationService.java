@@ -1,10 +1,14 @@
 package com.EmployeeManagment.Source.Security.auth;
 
 
+import com.EmployeeManagment.Source.Employee.Entity.Employee;
+import com.EmployeeManagment.Source.Employee.Exception.EmployeeNotFoundException;
+import com.EmployeeManagment.Source.Employee.Repository.EmployeeRepository;
 import com.EmployeeManagment.Source.Security.Config.JwtService;
 import com.EmployeeManagment.Source.Security.Token.Token;
 import com.EmployeeManagment.Source.Security.Token.TokenRepository;
 import com.EmployeeManagment.Source.Security.Token.TypeToken;
+import com.EmployeeManagment.Source.Security.entities.Roles;
 import com.EmployeeManagment.Source.Security.entities.User;
 import com.EmployeeManagment.Source.Security.entities.UserRepository;
 import com.EmployeeManagment.Source.Security.entities.UserResponse;
@@ -13,6 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,6 +38,8 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder ;
     private  final JwtService jwtService ;
     private final AuthenticationManager authenticationManager ;
+    @Autowired
+    private EmployeeRepository employeeRepository ;
 
 
     public AuthenticationResponse register(RegisterRequest request){
@@ -142,6 +149,12 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse editUserWithPassword(Long id ,   RegisterRequest userData){
+
+        Employee e = employeeRepository.findEmployeeByIdUser(id)
+                .orElseThrow(()-> new EmployeeNotFoundException("employee not found"));
+
+        e.setEmail(userData.getEmail());
+        this.employeeRepository.save(e);
 
         var user = User.builder()
 
