@@ -56,12 +56,13 @@ public class TaskScheduled implements Serializable {
 
      }
 
-    public TaskScheduled(Long id, TaskInserted t, Employee e, Date beginning, Date end, Content c) {
+    public TaskScheduled(Long id, TaskInserted t, Employee e, Date beginning, Date end, Content c , boolean status) {
         this.setId(id);
         this.setTaskInserted(t);
         this.setEmployee(e);
         this.setBeginning(beginning);
         this.setEnd(end);
         this.setContent(c);
+        this.setStatus(status);
     }
 }

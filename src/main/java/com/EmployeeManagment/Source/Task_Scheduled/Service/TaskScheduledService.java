@@ -99,7 +99,8 @@ public class TaskScheduledService {
                         e  ,////employee
                         t.getBeginning() , //// beginning date
                         t.getEnd() ,////end date
-                        c ////content
+                        c ,////content
+                        t.isStatus()
 
                 )
         );
@@ -142,6 +143,7 @@ public class TaskScheduledService {
     public Integer nbrTaskForOne(Long employee){
         return this.taskScheduledRepository.sumTaskDid(employee);
     }
+
 }
 
 
