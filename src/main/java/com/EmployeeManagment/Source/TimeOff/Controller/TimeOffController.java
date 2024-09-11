@@ -130,7 +130,7 @@ public class TimeOffController {
 
 
 
-  /*  @GetMapping(value = "/apply/report/pdf")
+    @GetMapping(value = "/apply/report/pdf")
     public void reportDemandePdf(HttpServletResponse response) throws IOException {
         response.setContentType("application/pdf");
 
@@ -145,6 +145,6 @@ public class TimeOffController {
 
         // Call your method to write the PDF content to the response output stream
         this.timeOffApplyPdfModel.exportDemande(response);
-    }*/
+    }
     
 }

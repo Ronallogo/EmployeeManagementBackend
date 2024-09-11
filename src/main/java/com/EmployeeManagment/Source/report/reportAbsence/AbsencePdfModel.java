@@ -22,18 +22,7 @@ public class AbsencePdfModel {
 
     @Autowired
     private AbsenceRepository absenceRepository ;
-    /*
-            @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id ;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
-    private Date absence_day ;
-    private String reason ;
-    @ManyToOne
-    @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee ;
 
-
-    */
 
     public void writeTableHeader(PdfPTable table){
         PdfPCell cell = new PdfPCell();

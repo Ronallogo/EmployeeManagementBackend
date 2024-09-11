@@ -4,12 +4,18 @@ package com.EmployeeManagment.Source.Pay_Stub.Controller;
 import com.EmployeeManagment.Source.Pay_Stub.Entity.PayStub;
 import com.EmployeeManagment.Source.Pay_Stub.Entity.PayStubRequest;
 import com.EmployeeManagment.Source.Pay_Stub.Service.PayStubService;
+import com.EmployeeManagment.Source.report.reportPayStub.PayStubPdfModel;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -20,6 +26,8 @@ public class PayStubController {
     /////variable that represent the service in this endpoint class
     @Autowired
     private PayStubService PayStubService ;
+    @Autowired
+    private PayStubPdfModel payStubPdfModel ;
 
     ////endpoint allowing to make a PayStub registration
     @RequestMapping(value = "/create",method = RequestMethod.POST,
@@ -77,6 +85,21 @@ public class PayStubController {
         return PayStubService.delete(id);
     }
 
+    @GetMapping(value = "/report/pdf/{id}")
+    public void reportPdf(HttpServletResponse response , @PathVariable Long id) throws IOException {
+        response.setContentType("application/pdf");
 
+        // Define a DateFormat for the filename
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        String currentDateTime = dateFormat.format(new Date());
+
+        // Set the Content-Disposition header to suggest a filename for download
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=bulletin_de_paie_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+
+        // Call your method to write the PDF content to the response output stream
+        this.payStubPdfModel.generetedPdf( id, response);
+    }
 
 }

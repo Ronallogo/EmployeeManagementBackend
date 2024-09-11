@@ -20,7 +20,7 @@ import java.util.List;
 @Component
 public class TimeOffApplyPdfModel {
 
-  /*  @Autowired
+    @Autowired
     private TimeOffApplyRepository   timeOffApplyRepository ;
     public void writeTableHeader(PdfPTable table){
         PdfPCell cell = new PdfPCell();
@@ -43,6 +43,8 @@ public class TimeOffApplyPdfModel {
         cell.setPhrase(new Phrase("TYPE DE CONGÉ" , font));
         table.addCell(cell);
 
+        cell.setPhrase(new Phrase("STATUS" , font));
+        table.addCell(cell);
 
         cell.setPhrase(new Phrase("TITULAIRE DU CONGÉ" , font));
         table.addCell(cell);
@@ -60,6 +62,7 @@ public class TimeOffApplyPdfModel {
             table.addCell(String.valueOf(t.getBeginning())) ;
             table.addCell(String.valueOf(t.getEnd())) ;
             table.addCell(t.getType() );
+            table.addCell((t.isValidate())? "congé validé" : "congé non validé");
             table.addCell(t.getEmployee().getName() + " " + t.getEmployee().getSurname() ) ;
 
         }
@@ -83,10 +86,10 @@ public class TimeOffApplyPdfModel {
         document.add(p);
 
 
-        PdfPTable table = new PdfPTable(5);
+        PdfPTable table = new PdfPTable(6);
 
         table.setWidthPercentage(100f);
-        table.setWidths(new float[] {1.5f,3.5f,3.5f,3.5f,3.5f});
+        table.setWidths(new float[] {1.5f,3.5f,3.5f,3.5f,3.5f,3.5f});
         table.setSpacingBefore(10);
         writeTableHeader(table);
         writeTableData(table);
@@ -94,7 +97,7 @@ public class TimeOffApplyPdfModel {
         document.add(table);
 
         document.close();
-    }*/
+    }
 
 
 

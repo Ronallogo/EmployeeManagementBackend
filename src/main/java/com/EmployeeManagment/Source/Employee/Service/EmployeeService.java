@@ -2,6 +2,7 @@ package com.EmployeeManagment.Source.Employee.Service;
 
 
 import com.EmployeeManagment.Source.Employee.Entity.EmployeeRequest;
+import com.EmployeeManagment.Source.Employee.Exception.DuplicactedEmployeeException;
 import com.EmployeeManagment.Source.Employee.Exception.EmployeeNotFoundException;
 import com.EmployeeManagment.Source.Employee.Repository.EmployeeRepository;
 import com.EmployeeManagment.Source.Position.Entity.Position;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 
 ///// class service for employee
@@ -40,6 +42,7 @@ public class EmployeeService {
             User user = userRepository.findByEmail(employee.getEmail())
                     .orElseThrow(()-> new RuntimeException(" user not found "));
 
+            if(this.checkUnity(employee)) throw new DuplicactedEmployeeException("employee already exist ");
             ////make the employee registration
             return  employeeRepository.save(new Employee(
                     employee.getName(),
@@ -130,5 +133,26 @@ public class EmployeeService {
     }
 
 
-}
+    public boolean checkUnity(EmployeeRequest e){
+        List<Employee> list = this.employeeRepository.findAll() ;
+
+        for(Employee emp : list){
+             if(
+                     Objects.equals(emp.getName() , e.getName()) &&
+                     Objects.equals(emp.getSurname() , e.getSurname()) &&
+                     Objects.equals(emp.getBirthday() , e.getBirthday()) &&
+                     Objects.equals(emp.getEmail() , e.getEmail())
+
+             ){
+                return false;
+             }
+        }
+        return false ;
+    }
+
+
+
+
+
+    }
 
