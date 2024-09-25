@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AbsenceRepository extends JpaRepository<Absence , Long> {
 
@@ -16,6 +17,8 @@ public interface AbsenceRepository extends JpaRepository<Absence , Long> {
        OR surname LIKE CONCAT('%', :keyword, '%'))
        """, nativeQuery = true)
     List<Absence> search(@Param("keyword") String keyword);
+  @Query(value = "SELECT * FROM absence WHERE employee_id = :keyword", nativeQuery = true)
+  Optional<Absence> searchByIdEmployee(@Param("keyword") Long keyword);
 
 
     @Query(value = "SELECT COUNT(id) FROM absence a WHERE  a.employee_id = :id_e;  " , nativeQuery = true)

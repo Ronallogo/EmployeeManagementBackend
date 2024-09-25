@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 @EnableJpaRepositories
 public interface TimeOffRepository extends JpaRepository<TimeOff, Long> {
@@ -22,6 +23,14 @@ public interface TimeOffRepository extends JpaRepository<TimeOff, Long> {
        OR e.surname LIKE CONCAT('%', :keyword, '%')
     """)
 List<TimeOff> search(@Param("keyword") String keyword);
+   @Query("""
+    SELECT t
+    FROM TimeOff t
+    JOIN FETCH t.timeOffApply a
+    JOIN FETCH a.employee e
+    WHERE  e.id = :keyword
+    """)
+   Optional<TimeOff> searchByIdEmployee(@Param("keyword") Long keyword);
 
 
 

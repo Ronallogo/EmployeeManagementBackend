@@ -11,12 +11,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth/employee_manager/employee")
@@ -31,10 +33,10 @@ public class EmployeeController {
 
     ////endpoint allowing to make an  employee registration
     @RequestMapping(value = "/create",method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Employee> saveEmployee(@RequestBody EmployeeRequest employee){
-         Employee  employeeAdded =  employeeService.create(employee);
+    public ResponseEntity<?> saveEmployee(@ModelAttribute EmployeeRequest employee, @RequestParam("file") MultipartFile file) throws IOException {
+         Employee  employeeAdded =  employeeService.create(employee , file);
 
         return  new ResponseEntity<Employee>( employeeAdded, HttpStatus.CREATED);
     }
@@ -56,10 +58,21 @@ public class EmployeeController {
 
 
     /////endpoint allowing to update  one  employee by id
-    @PutMapping(value = "/edit/{id}")
-    public ResponseEntity<Employee> editEmployee(@PathVariable Long id  , @RequestBody  EmployeeRequest employee){
+    @PutMapping(value = "/edit/{id}" ,
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Employee> editEmployee(@PathVariable Long id  ,@ModelAttribute EmployeeRequest employee, @RequestParam("file") MultipartFile file) throws IOException {
          System.out.print(employee);
-         Employee  employeeEdited =  employeeService.edit(id ,  employee);
+         Employee  employeeEdited =  employeeService.edit(id ,  employee , file);
+        return  new ResponseEntity<Employee>( employeeEdited , HttpStatus.OK);
+    }   @PutMapping(value = "/editWithOutPhoto/{id}" ,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Employee> editEmployeeWithOutPhoto(@PathVariable Long id  ,@RequestBody EmployeeRequest employee, @RequestParam("file") MultipartFile file) throws IOException {
+         System.out.print(employee);
+         Employee  employeeEdited =  employeeService.editWithOutPhoto(id ,  employee );
         return  new ResponseEntity<Employee>( employeeEdited , HttpStatus.OK);
     }
 
@@ -81,6 +94,13 @@ public class EmployeeController {
     @GetMapping(value = "/search/{keyword}")
     public List<Employee> searchEmployee(@PathVariable String keyword){
         return  employeeService.search(keyword);
+    }
+
+
+
+    @GetMapping(value = "/searchById/{id}")
+    public Optional<Employee> searchEmployeeById(@PathVariable Long id){
+        return  employeeService.searchById(id);
     }
 
     @GetMapping(value = "/report/pdf")

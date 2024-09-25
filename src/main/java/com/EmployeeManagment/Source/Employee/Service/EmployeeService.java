@@ -14,9 +14,12 @@ import com.EmployeeManagment.Source.Security.entities.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 
 ///// class service for employee
@@ -34,7 +37,7 @@ public class EmployeeService {
 
 
     ////function for create an employee
-    public Employee create(EmployeeRequest employee){
+    public Employee create(EmployeeRequest employee , MultipartFile file) throws IOException {
         ///check if the position exist
             Position p  =   positionRepository.findById(employee.getPosition())
                     .orElseThrow(()-> new PositionNotFoundException("position not found to make employee registration !!")) ;
@@ -44,6 +47,7 @@ public class EmployeeService {
 
             if(this.checkUnity(employee)) throw new DuplicactedEmployeeException("employee already exist ");
             ////make the employee registration
+
             return  employeeRepository.save(new Employee(
                     employee.getName(),
                     employee.getSurname() ,
@@ -52,7 +56,9 @@ public class EmployeeService {
                     employee.getBirthday() ,
                     employee.getPhone(),
                     p ,
-                    user
+                    user  ,
+                    file.getBytes()
+
             ));
     }
 
@@ -72,7 +78,7 @@ public class EmployeeService {
     }
 
     ////function to update an employee
-    public Employee edit(Long id ,   EmployeeRequest employee){
+    public Employee edit(Long id ,   EmployeeRequest employee , MultipartFile file) throws IOException {
 
         System.out.print(employee + "******------******" + id);
         ///check if the position exist in case where  position is updated
@@ -85,7 +91,7 @@ public class EmployeeService {
         User user = userRepository.findByEmail(employee.getEmail())
                 .orElseThrow(()-> new RuntimeException(" user not found "));
 
-
+        employee.setPhoto(file.getBytes());
         ////make the employee update
         return  employeeRepository.save(new Employee(
                 id ,
@@ -96,7 +102,8 @@ public class EmployeeService {
                 employee.getBirthday() ,
                 employee.getPhone(),
                 p ,
-                user
+                user ,
+               employee.getPhoto()
         ));
     }
 
@@ -126,6 +133,9 @@ public class EmployeeService {
     public  List<Employee> search(String keyword){
         return employeeRepository.researchEmployee(keyword);
     }
+    public Optional<Employee> searchById(Long id){
+        return employeeRepository.findById(id);
+    }
 
     public Employee getByEmail(String email){
         return this.employeeRepository.findByEmail(email)
@@ -151,8 +161,33 @@ public class EmployeeService {
     }
 
 
+    public Employee editWithOutPhoto(Long id, EmployeeRequest employee) {
+        System.out.print(employee + "******------******" + id);
+        ///check if the position exist in case where  position is updated
+        Position p  =   positionRepository.findById(employee.getPosition())
+                .orElseThrow(()-> new PositionNotFoundException("position not found to make employee registration !!")) ;
+
+        Employee e = employeeRepository.findById(id)
+                .orElseThrow(()-> new EmployeeNotFoundException("this employee do not exist"));
+
+        User user = userRepository.findByEmail(employee.getEmail())
+                .orElseThrow(()-> new RuntimeException(" user not found "));
 
 
+        ////make the employee update
+        return  employeeRepository.save(new Employee(
+                id ,
+                employee.getName(),
+                employee.getSurname() ,
+                employee.getEmail(),
+                employee.getAddress() ,
+                employee.getBirthday() ,
+                employee.getPhone(),
+                p ,
+                user
+
+        ));
 
     }
+}
 

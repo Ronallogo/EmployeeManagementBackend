@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -119,4 +120,10 @@ public class TimeOffService {
     public List<TimeOff> search(String keyword){
         return TimeOffRepository.search(keyword);
     }
+    public Optional<TimeOff> searchByIdEmployee(Long keyword){
+        return TimeOffRepository.searchByIdEmployee(keyword);
+    }
+
+
+
 }

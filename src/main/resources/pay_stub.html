@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulletin de Paie</title>
+    <style>
+        body {
+            font-family: 'DejaVu Serif', serif;
+            margin: 20px;
+        }
+        .title {
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .field {
+            margin-bottom: 10px;
+        }
+        .label {
+            font-weight: bold;
+            display: inline-block;
+            width: 200px;
+        }
+        .value {
+            display: inline-block;
+        }
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            font-size: 12px;
+        }
+        .page-number {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Title Section -->
+<div class="title">
+    BULLETIN DE PAIE
+</div>
+
+<!-- Employer Information Section -->
+<div class="section">
+    <div class="section-title">Employeur Information</div>
+    <div class="field">
+        <span class="label">Nom de l'employeur :</span>
+        <span class="value">EMPLOYEE_MANAGER</span>
+    </div>
+    <div class="field">
+        <span class="label">Adresse :</span>
+        <span class="value">KODJOVIAKOPÉ près de la pharmacie Emmanuel</span>
+    </div>
+    <div class="field">
+        <span class="label">Tél :</span>
+        <span class="value">70916006 / 70854652</span>
+    </div>
+</div>
+
+<!-- Employee Information Section -->
+<div class="section">
+    <div class="section-title">Informations sur l'employé</div>
+    <div class="field">
+        <span class="label">Nom :</span>
+        <span class="value">${employee.name}</span>
+    </div>
+    <div class="field">
+        <span class="label">Date de naissance :</span>
+        <span class="value">${employee.dateOfBirth}</span>
+    </div>
+</div>
+
+<!-- PayStub Details Section -->
+<div class="section">
+    <div class="section-title">Détails du Bulletin de Paie</div>
+    <div class="field">
+        <span class="label">Montant :</span>
+        <span class="value">${payStub.amount}</span>
+    </div>
+    <div class="field">
+        <span class="label">Nombre de tâches :</span>
+        <span class="value">${payStub.nbrTasks}</span>
+    </div>
+    <div class="field">
+        <span class="label">Bonus :</span>
+        <span class="value">${payStub.bonus}</span>
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    Assistance Comptable et Fiscale
+</div>
+
+<div class="page-number">
+    Page ${currentPage} / ${totalPages}
+</div>
+
+</body>
+</html>

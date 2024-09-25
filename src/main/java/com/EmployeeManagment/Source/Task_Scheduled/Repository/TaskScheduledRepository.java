@@ -4,6 +4,7 @@ import com.EmployeeManagment.Source.Task_Scheduled.Entity.TaskScheduled;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.scheduling.config.Task;
 
 import java.util.List;
 
@@ -36,6 +37,10 @@ public interface TaskScheduledRepository extends JpaRepository<TaskScheduled, Lo
     List<Long> listTaskDidForPayStub(@Param("employee") Long employee);
     @Query(value = "SELECT * FROM task_scheduled WHERE employee_id = :employee", nativeQuery = true)
     List<TaskScheduled> listTaskDidForOne(@Param("employee") Long employee);
+
+
+    @Query(value = "SELECT * FROM task_scheduled WHERE status = 1" , nativeQuery = true)
+    List<TaskScheduled> listTaskValidate();
 
 
 

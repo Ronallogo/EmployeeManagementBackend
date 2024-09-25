@@ -37,6 +37,9 @@ public class Employee  implements Serializable {
     private Date birthday ;
     private String phone ;
     private String address;
+    @Lob
+    @Column(name = "photo", columnDefinition = "MEDIUMBLOB")
+    private byte[] photo;
 
 
     @ManyToOne
@@ -92,7 +95,8 @@ public class Employee  implements Serializable {
             String address,
             Date birthday,
             String phone,
-            Position p
+            Position p,
+            byte[]photo
     ) {
         this.setId(id);
         this.setName(name);
@@ -103,6 +107,33 @@ public class Employee  implements Serializable {
         this.setPosition(p);
         this.setAddress(address);
         this.setPosition(p);
+        this.setPhoto(photo);
+
+    }
+
+
+
+    public Employee(
+            Long id,
+            String name,
+            String surname,
+            String email,
+            String address,
+            Date birthday,
+            String phone,
+            Position p
+
+    ) {
+        this.setId(id);
+        this.setName(name);
+        this.setSurname(surname);
+        this.setBirthday(birthday);
+        this.setEmail(email);
+        this.setPhone(phone);
+        this.setPosition(p);
+        this.setAddress(address);
+        this.setPosition(p);
+
 
     }
 
@@ -153,5 +184,38 @@ public class Employee  implements Serializable {
         this.setPosition(p);
         this.setAddress(address);
         this.setPosition(p);
-        this.setUser(user); }
+        this.setUser(user);
+    }
+
+    public Employee(String name, String surname, String email, String address, Date birthday, String phone, Position p, User user, byte[] photo) {
+
+
+
+        this.setId(id);
+        this.setName(name);
+        this.setSurname(surname);
+        this.setBirthday(birthday);
+        this.setEmail(email);
+        this.setPhone(phone);
+        this.setPosition(p);
+        this.setAddress(address);
+        this.setPosition(p);
+        this.setUser(user);
+        this.setPhoto(photo);
+    }
+
+    public Employee(Long id, String name, String surname, String email, String address, Date birthday, String phone, Position p, User user, byte[] photo) {
+
+        this.setId(id);
+        this.setName(name);
+        this.setSurname(surname);
+        this.setBirthday(birthday);
+        this.setEmail(email);
+        this.setPhone(phone);
+        this.setPosition(p);
+        this.setAddress(address);
+        this.setPosition(p);
+        this.setUser(user);
+        this.setPhoto(photo);
+    }
 }

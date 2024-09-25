@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -89,6 +90,9 @@ public class AbsenceService {
     /////function to search some absences
     public List<Absence> search(String keyword){
       return   this.absenceRepository.search(keyword);
+    }
+    public Optional<Absence> searchById(Long keyword){
+      return   this.absenceRepository.searchByIdEmployee(keyword);
     }
 
     public Integer findNbrAbsenceForOne(Long employee){

@@ -23,6 +23,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth/employee_manager/timeOff")
@@ -106,10 +107,13 @@ public class TimeOffController {
 
 
     @GetMapping(value = "/search/{keyword}")
-    public List<TimeOff> searchContent(@PathVariable String keyword){
+    public List<TimeOff> searchTimeOff(@PathVariable String keyword){
         return  timeOffService.search(keyword);
     }
-
+    @GetMapping(value = "/searchByIdEmployee/{keyword}")
+    public Optional<TimeOff> searchTimeOffById(@PathVariable Long keyword){
+        return  timeOffService.searchByIdEmployee(keyword);
+    }
 
     @GetMapping(value = "/report/pdf")
     public void reportPdf(HttpServletResponse response) throws IOException {

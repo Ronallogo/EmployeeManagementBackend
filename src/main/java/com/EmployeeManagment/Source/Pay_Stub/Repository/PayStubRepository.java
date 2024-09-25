@@ -23,6 +23,12 @@ public interface PayStubRepository  extends JpaRepository<PayStub, Long> {
                OR e.surname LIKE CONCAT('%', :keyword, '%');""", nativeQuery = true)
     List<PayStub> searchByEmployee(@Param("keyword") String keyword);
 
+    @Query(value = """
+            SELECT p.id , p.amount , p.bonus , p.nbr_tasks , p.payment_date , p.employee_id
+            FROM pay_stub p
+            WHERE  p.employee_id = :keyword""", nativeQuery = true)
+    Optional<PayStub> searchByEmployeeId(@Param("keyword") Long keyword);
+
     @Query(value = "SELECT "+valueForOne+"FROM pay_stub p  INNER JOIN employee e  ON e.id = p.employee_id" +
             " WHERE e.email = :email ;", nativeQuery = true)
     Optional<PayStub> getForOne(@Param("email") String email);

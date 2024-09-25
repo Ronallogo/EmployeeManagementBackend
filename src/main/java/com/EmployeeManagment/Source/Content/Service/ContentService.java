@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /////class service for content
 @Service
@@ -47,6 +48,9 @@ public class ContentService {
 
     public List<Content> search(String keyword){
         return contentRepository.researchContent(keyword);
+    }
+  public Optional<Content> searchById(Long keyword){
+        return contentRepository.findById(keyword);
     }
 
 

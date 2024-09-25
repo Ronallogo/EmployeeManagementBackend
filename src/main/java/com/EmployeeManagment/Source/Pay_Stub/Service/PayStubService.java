@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -164,6 +165,9 @@ public class PayStubService {
 
     public List<PayStub> search(String keyword){
         return this.payStubRepository.searchByEmployee(keyword);
+    }
+    public Optional<PayStub> searchById(Long id){
+        return this.payStubRepository.searchByEmployeeId(id);
     }
 
 

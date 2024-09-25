@@ -1,0 +1,166 @@
+<!-- Created with Jaspersoft Studio version 7.0.0.final using JasperReports Library version 7.0.0-b478feaa9aab4375eba71de77b4ca138ad2f62aa -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" name="bulletin_de_paie" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7fbbcd70-699a-4e6f-9f91-ce9ab9803cf2">
+    <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
+    <queryString language="SQL"><![CDATA[ SELECT *FROM PAYSTUB]]></queryString>
+    <style name="style-general" fontName="DejaVu Serif" fontSize="14" isBold="true"/>
+    <style name="style-general-2" fontName="DejaVu Serif" fontSize="14" isBold="false" />
+    <style name="style-general-3" fontName="DejaVu Serif"    fontSize="20.0" isBold="true" isItalic="false" hTextAlign="Justified" vTextAlign="Top"/>
+    <field name="id" class="java.lang.Long">
+
+    </field>
+    <field name="amount" class="java.lang.Integer">
+
+    </field>
+    <field name="nbrTasks" class="java.lang.Integer">
+
+    </field>
+    <field name="bonus" class="java.lang.Integer">
+
+    </field>
+    <field name="PRICE" class="java.math.BigDecimal">
+        <property name="com.jaspersoft.studio.field.name" value="PRICE"/>
+        <property name="com.jaspersoft.studio.field.label" value="PRICE"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="POSITIONS"/>
+    </field>
+    <group name="DOCUMENTID">
+        <groupExpression><![CDATA[$F{DOCUMENTID}]]></groupExpression>
+    </group>
+    <group name="POSITIONNO">
+        <groupExpression><![CDATA[$F{POSITIONNO}]]></groupExpression>
+    </group>
+    <group name="PRODUCTID">
+        <groupExpression><![CDATA[$F{PRODUCTID}]]></groupExpression>
+    </group>
+    <group name="QUANTITY">
+        <groupExpression><![CDATA[$F{QUANTITY}]]></groupExpression>
+    </group>
+    <group name="PRICE">
+        <groupExpression><![CDATA[$F{PRICE}]]></groupExpression>
+    </group>
+    <title>
+        <band height="130" splitType="Stretch">
+            <image>
+                <reportElement x="20" y="-6" width="140" height="136"/>
+                <imageExpression><![CDATA["C:/Users/RON_ALLOGO/Desktop/project_a_endre_cifop/BACK-END-MANAGEMENT-EMPLOYEE/icon/EMPLO.png"]]></imageExpression>
+            </image>
+
+            <rectangle>
+                <reportElement x="300" y="20" width="251" height="50"/>
+            </rectangle>
+            <elementGroup>
+                <staticText>
+                    <reportElement uuid="32a6529b-8f1b-4a81-95b2-9bdfd0a76968" x="315" y="35" width="220" height="20" style="style-general-2">
+                        <![CDATA[ ASSISTANCE COMPTABLE ET FISCALE]]>
+                    </reportElement>
+                </staticText>
+            </elementGroup>
+        </band>
+    </title>
+
+    <detail>
+        <band height="580" splitType="Stretch">
+            <frame>
+                <reportElement uuid="ceca83ba-be63-48df-87d0-e2a46a03233e" x="13" y="10" width="567" height="60" backcolor="#8C8888"/>
+                <staticText>
+                    <reportElement uuid="da9cd845-a50b-4e43-a350-fe12360b698b" x="180" y="25" width="200" height="30" >
+                        <![CDATA[ BULLETIN DE PAIE]]>
+                    </reportElement>
+                </staticText>
+                <elementGroup>
+                    <rectangle/>
+                    <elementGroup>
+                        <staticText>
+                            <reportElement uuid="d2be571d-8f26-4236-b06e-2db5eb53fcd4" x="10" y="10" width="150" height="30">
+                                <![CDATA[ NOM DE L'EMPLOYEUR :]]>
+                            </reportElement>
+                        </staticText>
+                    </elementGroup>
+                    <staticText>
+                        <reportElement uuid="250d3ccf-7be0-499e-8848-6630347901ea" x="130" y="40" width="300" height="30"><![CDATA[KODJOVIAKOPÉ près de la pharmacie Emmanuel]]></reportElement>
+                    </staticText>
+                    <staticText>
+                        <reportElement uuid="76d6b5f0-ee36-4c2c-a4c2-946040ef7325" x="180" y="10" width="150" height="20" style="style-general"><![CDATA[EMPLOYEE_MANGER]]></reportElement>
+                    </staticText>
+                    <staticText>
+                        <reportElement uuid="0e45a0df-92ea-41a8-a71a-711f543eeda4" x="10" y="40" width="100" height="30" style="style-general">
+                            <![CDATA[ ADRESSE :]]>
+                        </reportElement>
+                    </staticText>
+                    <staticText>
+                        <reportElement uuid="6cd1707e-311f-4efa-88bc-d3eb014c3b85" x="10" y="70" width="100" height="30"  >
+                           <![CDATA[ TÉL :]]>
+                        </reportElement>
+                    </staticText>
+                    <staticText >
+                        <reportElement uuid="4c15c725-4e87-4772-a194-69afa067eb73" x="130" y="70" width="150" height="30"  style="style-general"><![CDATA[70916006 / 70854652]]></reportElement>
+                    </staticText>
+
+                    <textField>
+                        <reportElement uuid="1cd5fd7f-d2a5-4688-ba08-479ad64640a5" x="148" y="180" width="100" height="20"/>
+                        <textFieldExpression><![CDATA[$F{QUANTITY}]]></textFieldExpression>
+                    </textField>
+                    <staticText >
+                        <reportElement uuid="68afccb8-ec65-40d5-ba8c-db944fae3b7e" x="8" y="180" width="140" height="30" style="style-general-2"><![CDATA[DATE DE NAISSANCE :]]></reportElement>
+                    </staticText>
+                    <staticText>
+                        <reportElement  uuid="83ea3683-55bb-4bb9-a4a0-f600e666c00a" x="8" y="150" width="140" height="30" style="style-general-2"><![CDATA[DATE DE NAISSANCE :]]></reportElement>
+                    </staticText>
+                    <staticText >
+                        <reportElement uuid="33c8152e-3756-4880-99ff-1186991ce70d" x="8" y="120" width="82" height="30" style="style-general-2"><![CDATA[ NOMS :]]></reportElement>
+                    </staticText>
+                    <textField>
+                        <reportElement uuid="5a17b6b2-081f-4512-a9b2-4802ad7f526b" x="90" y="120" width="80" height="20"/>
+                        <textFieldExpression><![CDATA[$F{POSITIONNO}]]></textFieldExpression>
+                    </textField>
+                    <textField>
+                        <reportElement uuid="5e4c1a06-837c-4705-9c35-4550d5ee76dc" x="148" y="150" width="100" height="20"/>
+                        <textFieldExpression><![CDATA[$F{QUANTITY}]]></textFieldExpression>
+                    </textField>
+                    <staticText >
+                        <reportElement uuid="68afccb8-ec65-40d5-ba8c-db944fae3b7e" x="8" y="180" width="140" height="30" style="style-general"><![CDATA[DATE DE NAISSANCE :]]></reportElement>
+                    </staticText>
+                    <staticText>
+                        <reportElement  uuid="c4ac6948-b5c5-4384-b9ee-90b63fa4c893" x="8" y="210" width="140" height="30"  style="style-general"><![CDATA[DATE DE NAISSANCE :]]></reportElement>
+                    </staticText>
+                    <textField>
+                        <reportElement uuid="e953dd59-3aa4-42f1-a3d0-5470db47ff6f" x="148" y="210" width="100" height="20"/>
+                        <textFieldExpression><![CDATA[$F{PRICE}]]></textFieldExpression>
+                    </textField>
+                    <textField>
+                        <reportElement uuid="e953dd59-3aa4-42f1-a3d0-5470db47ff6f" x="148" y="240" width="100" height="20"/>
+                        <textFieldExpression><![CDATA[$F{PRICE}]]></textFieldExpression>
+                    </textField>
+                    <textField>
+                        <reportElement uuid="9a279af4-b431-4ff1-b0b2-493ab66f1ef7" x="148" y="240" width="100" height="20"/>
+                        <textFieldExpression><![CDATA[$F{PRICE}]]></textFieldExpression>
+                    </textField>
+                </elementGroup>
+            </frame>
+        </band>
+    </detail>
+
+    <summary>
+        <band height="80" splitType="Stretch">
+            <textField>
+                <reportElement uuid="b3f1c3cf-9621-487f-b659-478cb51560f5" x="400" y="20" width="140" height="30"/>
+                <textFieldExpression><![CDATA[$F{PRICE}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+
+    <pageFooter>
+        <band height="50" splitType="Stretch">
+            <staticText>
+                <reportElement x="20" y="10" width="100" height="30" />
+                <text><![CDATA[Page ]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="70" y="10" width="50" height="30"/>
+                <textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+
+    <property name="com.jaspersoft.studio.export.pdf.fonts" value="DejaVu Serif"/>
+</jasperReport>

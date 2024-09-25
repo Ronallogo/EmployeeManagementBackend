@@ -15,6 +15,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth/employee_manager/content")
@@ -71,6 +72,10 @@ public class ContentController {
     @GetMapping(value = "/search/{keyword}")
     public List<Content> searchContent(@PathVariable String keyword){
         return  contentService.search(keyword);
+    }
+  @GetMapping(value = "/searchById/{keyword}")
+    public Optional<Content> searchContentById(@PathVariable Long keyword){
+        return  contentService.searchById(keyword);
     }
 
 

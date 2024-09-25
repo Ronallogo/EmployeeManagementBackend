@@ -77,6 +77,9 @@ public class TaskScheduledService {
     /////function for update task_schedule
 
     public  TaskScheduled edit( Long id , TaskScheduledRequest t){
+
+        TaskScheduled taskScheduled = this.taskScheduledRepository.findById(id)
+                .orElseThrow(()-> new TaskScheduledNotFoundException("taskScheduled not found"));
         /////check the employee
         Employee e = employeeRepository.findById(t.getEmployee())
                 .orElseThrow(()-> new EmployeeNotFoundException("employee not found !!"));
@@ -93,17 +96,14 @@ public class TaskScheduledService {
         {
             throw new RuntimeException("check the deviation between the beginning date and the end date !!");
         }  /////make the task_schedule updating
-        return  taskScheduledRepository.save( new TaskScheduled(
-                        id ,
-                        task , ///taskInserted
-                        e  ,////employee
-                        t.getBeginning() , //// beginning date
-                        t.getEnd() ,////end date
-                        c ,////content
-                        t.isStatus()
+        taskScheduled.setTaskInserted(task);
+        taskScheduled.setEmployee(e);
+        taskScheduled.setContent(c);
+        taskScheduled.setStatus(t.isStatus());
+        taskScheduled.setBeginning(t.getBeginning());
+        taskScheduled.setEnd(t.getEnd());
+        return  taskScheduledRepository.save(taskScheduled );
 
-                )
-        );
 
 
     }

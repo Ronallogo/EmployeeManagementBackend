@@ -17,6 +17,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth/employee_manager/absence")
@@ -78,6 +79,10 @@ public class AbsenceController {
     @GetMapping(value = "/search/{keyword}")
     public List<Absence> searchAbsence(@PathVariable String keyword){
         return AbsenceService.search(keyword);
+    }
+ @GetMapping(value = "/searchById/{id}")
+    public Optional<Absence> searchAbsenceByIdEmployee(@PathVariable Long id){
+        return AbsenceService.searchById(id);
     }
 
 

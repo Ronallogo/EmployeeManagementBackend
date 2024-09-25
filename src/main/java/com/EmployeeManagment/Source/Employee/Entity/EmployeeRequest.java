@@ -2,6 +2,9 @@ package com.EmployeeManagment.Source.Employee.Entity;
 
 import com.EmployeeManagment.Source.Security.entities.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.Basic;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Lob;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -25,6 +28,9 @@ public class EmployeeRequest {
     private Long position;
     private String address ;
     private User  user;
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    private byte[] photo ;
     ////// constructor personalize for creation a employee
     public EmployeeRequest(
             String name ,

@@ -1,22 +1,34 @@
 package com.EmployeeManagment.Source.Pay_Stub.Controller;
 
 
+
 import com.EmployeeManagment.Source.Pay_Stub.Entity.PayStub;
 import com.EmployeeManagment.Source.Pay_Stub.Entity.PayStubRequest;
+import com.EmployeeManagment.Source.Pay_Stub.Exception.PayStubNotFoundException;
+import com.EmployeeManagment.Source.Pay_Stub.Repository.PayStubRepository;
 import com.EmployeeManagment.Source.Pay_Stub.Service.PayStubService;
+import com.EmployeeManagment.Source.Pay_Stub.Service.ReportServicePayStub;
 import com.EmployeeManagment.Source.report.reportPayStub.PayStubPdfModel;
 import jakarta.servlet.http.HttpServletResponse;
+
+import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth/employee_manager/payStub")
@@ -26,6 +38,10 @@ public class PayStubController {
     /////variable that represent the service in this endpoint class
     @Autowired
     private PayStubService PayStubService ;
+    @Autowired
+    private ReportServicePayStub report ;
+    @Autowired
+    private PayStubRepository payStubRepository ;
     @Autowired
     private PayStubPdfModel payStubPdfModel ;
 
@@ -58,6 +74,11 @@ public class PayStubController {
     public ResponseEntity<List<PayStub>> SearchPayStub(@PathVariable String keyword){
         List<PayStub> listPayStub = PayStubService.search(keyword) ;
         return new ResponseEntity<List<PayStub>>(listPayStub , HttpStatus.OK);
+    }
+    @GetMapping(value = "/searchById/{id}")
+    public ResponseEntity<Optional<PayStub>> SearchPayStubById(@PathVariable Long id){
+        Optional<PayStub> PayStub = PayStubService.searchById(id) ;
+        return new ResponseEntity<Optional<PayStub>>(PayStub , HttpStatus.OK);
     }
     @GetMapping(value = "/getPayStubForOne/{email}")
     public ResponseEntity<PayStub> getPayStub(@PathVariable String email){
@@ -101,5 +122,12 @@ public class PayStubController {
         // Call your method to write the PDF content to the response output stream
         this.payStubPdfModel.generetedPdf( id, response);
     }
+
+    @GetMapping("/report/{format}/{id}")
+    public String generatedReport(@PathVariable String format , @PathVariable Long id) throws JRException, FileNotFoundException {
+            return report.generatePayStubReport(id, format);
+    }
+
+
 
 }
