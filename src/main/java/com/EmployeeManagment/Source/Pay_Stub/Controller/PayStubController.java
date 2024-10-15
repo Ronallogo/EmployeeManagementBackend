@@ -4,7 +4,6 @@ package com.EmployeeManagment.Source.Pay_Stub.Controller;
 
 import com.EmployeeManagment.Source.Pay_Stub.Entity.PayStub;
 import com.EmployeeManagment.Source.Pay_Stub.Entity.PayStubRequest;
-import com.EmployeeManagment.Source.Pay_Stub.Exception.PayStubNotFoundException;
 import com.EmployeeManagment.Source.Pay_Stub.Repository.PayStubRepository;
 import com.EmployeeManagment.Source.Pay_Stub.Service.PayStubService;
 import com.EmployeeManagment.Source.Pay_Stub.Service.ReportServicePayStub;
@@ -13,15 +12,12 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -120,12 +116,21 @@ public class PayStubController {
         response.setHeader(headerKey, headerValue);
 
         // Call your method to write the PDF content to the response output stream
-        this.payStubPdfModel.generetedPdf( id, response);
+        this.payStubPdfModel.generatedPdf2( id, response);
     }
 
     @GetMapping("/report/{format}/{id}")
     public String generatedReport(@PathVariable String format , @PathVariable Long id) throws JRException, FileNotFoundException {
             return report.generatePayStubReport(id, format);
+    }
+    @GetMapping("/generate/{Id}")
+    public void generatePdf(@PathVariable Long Id, HttpServletResponse response) throws Exception {
+        byte[] pdfBytes = report.generatePdf(Id);
+
+        response.setContentType(MediaType.APPLICATION_PDF_VALUE);
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=bulletin_de_paie.pdf");
+        response.getOutputStream().write(pdfBytes);
+        response.getOutputStream().flush();
     }
 
 
