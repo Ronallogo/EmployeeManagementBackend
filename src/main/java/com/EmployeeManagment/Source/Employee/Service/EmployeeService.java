@@ -91,6 +91,9 @@ public class EmployeeService {
         User user = userRepository.findByEmail(employee.getEmail())
                 .orElseThrow(()-> new RuntimeException(" user not found "));
 
+        user.setFirstname(employee.getName());
+        user.setLastname(employee.getSurname());
+        userRepository.save(user);
         employee.setPhoto(file.getBytes());
         ////make the employee update
         return  employeeRepository.save(new Employee(
@@ -161,7 +164,7 @@ public class EmployeeService {
     }
 
 
-    public Employee editWithOutPhoto(Long id, EmployeeRequest employee) {
+    public Employee editWithOutPhoto(Long id, EmployeeRequest employee ,MultipartFile file ) throws IOException {
         System.out.print(employee + "******------******" + id);
         ///check if the position exist in case where  position is updated
         Position p  =   positionRepository.findById(employee.getPosition())
@@ -184,7 +187,9 @@ public class EmployeeService {
                 employee.getBirthday() ,
                 employee.getPhone(),
                 p ,
-                user
+                user ,
+                file.getBytes()
+
 
         ));
 

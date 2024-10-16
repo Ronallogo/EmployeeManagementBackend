@@ -66,13 +66,14 @@ public class EmployeeController {
          System.out.print(employee);
          Employee  employeeEdited =  employeeService.edit(id ,  employee , file);
         return  new ResponseEntity<Employee>( employeeEdited , HttpStatus.OK);
-    }   @PutMapping(value = "/editWithOutPhoto/{id}" ,
+    }
+    @PutMapping(value = "/edit2/{id}" ,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Employee> editEmployeeWithOutPhoto(@PathVariable Long id  ,@RequestBody EmployeeRequest employee, @RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<Employee> editEmployeeWithOutPhoto(@PathVariable Long id ,@ModelAttribute  EmployeeRequest employee, @RequestParam("file") MultipartFile file) throws IOException {
          System.out.print(employee);
-         Employee  employeeEdited =  employeeService.editWithOutPhoto(id ,  employee );
+         Employee  employeeEdited =  employeeService.editWithOutPhoto(id ,  employee , file );
         return  new ResponseEntity<Employee>( employeeEdited , HttpStatus.OK);
     }
 

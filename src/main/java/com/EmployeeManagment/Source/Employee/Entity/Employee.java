@@ -46,25 +46,25 @@ public class Employee  implements Serializable {
     @JoinColumn(name = "position_id", nullable = false)
     private Position position;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    private List<TaskScheduled> taskScheduledList ;
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<TaskScheduled> taskScheduledList;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    private List<TimeOffApply> timeOffApplies ;
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<TimeOffApply> timeOffApplies;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    private List<Absence> absences ;
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Absence> absences;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    private List<PayStub> payStubs ;
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PayStub> payStubs;
 
     /////// constructor personalize for creation
     public Employee(
@@ -218,4 +218,5 @@ public class Employee  implements Serializable {
         this.setUser(user);
         this.setPhoto(photo);
     }
+
 }

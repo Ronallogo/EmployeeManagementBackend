@@ -218,6 +218,8 @@ public class AuthenticationService {
 
     public boolean delete(Long id){
         if(this.repository.existsById(id)){
+            List<Token> listToken =   this.tokenRepository.findAllTokenByUser(id);
+            this.tokenRepository.deleteAll(listToken);
             this.repository.deleteById(id);
             return  true;
         }
