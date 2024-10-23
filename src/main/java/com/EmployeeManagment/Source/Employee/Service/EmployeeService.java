@@ -5,6 +5,8 @@ import com.EmployeeManagment.Source.Employee.Entity.EmployeeRequest;
 import com.EmployeeManagment.Source.Employee.Exception.DuplicactedEmployeeException;
 import com.EmployeeManagment.Source.Employee.Exception.EmployeeNotFoundException;
 import com.EmployeeManagment.Source.Employee.Repository.EmployeeRepository;
+import com.EmployeeManagment.Source.Notification.Entity.Notification;
+import com.EmployeeManagment.Source.Notification.Repository.NotificationRepository;
 import com.EmployeeManagment.Source.Position.Entity.Position;
 import com.EmployeeManagment.Source.Position.Repository.PositionRepository;
 import com.EmployeeManagment.Source.Employee.Entity.Employee;
@@ -31,6 +33,10 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository ;
     @Autowired
     private PositionRepository positionRepository ;
+    @Autowired
+    private NotificationRepository notificationRepository ;
+
+
 
     @Autowired
     private UserRepository userRepository ;
@@ -38,28 +44,31 @@ public class EmployeeService {
 
     ////function for create an employee
     public Employee create(EmployeeRequest employee , MultipartFile file) throws IOException {
-        ///check if the position exist
-            Position p  =   positionRepository.findById(employee.getPosition())
-                    .orElseThrow(()-> new PositionNotFoundException("position not found to make employee registration !!")) ;
+    ///check if the position exist
+        Position p  =   positionRepository.findById(employee.getPosition())
+                .orElseThrow(()-> new PositionNotFoundException("position not found to make employee registration !!")) ;
 
-            User user = userRepository.findByEmail(employee.getEmail())
-                    .orElseThrow(()-> new RuntimeException(" user not found "));
+        User user = userRepository.findByEmail(employee.getEmail())
+                .orElseThrow(()-> new RuntimeException(" user not found "));
 
-            if(this.checkUnity(employee)) throw new DuplicactedEmployeeException("employee already exist ");
-            ////make the employee registration
+        if(this.checkUnity(employee)) throw new DuplicactedEmployeeException("employee already exist ");
+        
+        ////make the employee registration
 
-            return  employeeRepository.save(new Employee(
-                    employee.getName(),
-                    employee.getSurname() ,
-                    employee.getEmail(),
-                    employee.getAddress() ,
-                    employee.getBirthday() ,
-                    employee.getPhone(),
-                    p ,
-                    user  ,
-                    file.getBytes()
 
-            ));
+
+        return  employeeRepository.save(new Employee(
+                employee.getName(),
+                employee.getSurname() ,
+                employee.getEmail(),
+                employee.getAddress() ,
+                employee.getBirthday() ,
+                employee.getPhone(),
+                p ,
+                user  ,
+                file.getBytes()
+
+        ));
     }
 
 

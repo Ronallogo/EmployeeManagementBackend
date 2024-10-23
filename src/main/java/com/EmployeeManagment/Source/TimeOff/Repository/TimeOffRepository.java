@@ -30,7 +30,7 @@ List<TimeOff> search(@Param("keyword") String keyword);
     JOIN FETCH a.employee e
     WHERE  e.id = :keyword
     """)
-   Optional<TimeOff> searchByIdEmployee(@Param("keyword") Long keyword);
+   List<TimeOff> searchByIdEmployee(@Param("keyword") Long keyword);
 
 
 

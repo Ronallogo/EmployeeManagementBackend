@@ -1,6 +1,7 @@
 package com.EmployeeManagment.Source.Employee.Entity;
 
 import com.EmployeeManagment.Source.Absences.Entity.Absence;
+import com.EmployeeManagment.Source.Notification.Entity.Notification;
 import com.EmployeeManagment.Source.Pay_Stub.Entity.PayStub;
 import com.EmployeeManagment.Source.Position.Entity.Position;
 import com.EmployeeManagment.Source.Security.entities.User;
@@ -46,8 +47,8 @@ public class Employee  implements Serializable {
     @JoinColumn(name = "position_id", nullable = false)
     private Position position;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id" , unique = true)
     private User user;
 
     @JsonIgnore
@@ -66,6 +67,9 @@ public class Employee  implements Serializable {
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PayStub> payStubs;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Notification> notification;
     /////// constructor personalize for creation
     public Employee(
             String name ,

@@ -27,6 +27,7 @@ public class PayStub implements Serializable {
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee ;
+//private boolean bonusIsGive ;
 
     public PayStub(Date date, Integer bonus, Employee employee, Integer amount , Integer nbrTasks){
         this.setPaymentDate(date);

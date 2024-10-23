@@ -7,6 +7,8 @@ import com.EmployeeManagment.Source.Content.Repository.ContentRepository;
 import com.EmployeeManagment.Source.Employee.Entity.Employee;
 import com.EmployeeManagment.Source.Employee.Exception.EmployeeNotFoundException;
 import com.EmployeeManagment.Source.Employee.Repository.EmployeeRepository;
+import com.EmployeeManagment.Source.Notification.Entity.Notification;
+import com.EmployeeManagment.Source.Notification.Repository.NotificationRepository;
 import com.EmployeeManagment.Source.Task_Inserted.Entity.TaskInserted;
 import com.EmployeeManagment.Source.Task_Inserted.Exception.TaskInsertedNotFoundException;
 import com.EmployeeManagment.Source.Task_Inserted.Repository.TaskInsertedRepository;
@@ -20,7 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -36,7 +41,10 @@ public class TaskScheduledService {
     private ContentRepository contentRepository ;
 
     @Autowired
-    TaskScheduledRepository taskScheduledRepository ;
+    private   TaskScheduledRepository taskScheduledRepository ;
+
+    @Autowired
+    private NotificationRepository notificationRepository ;
 
 
     ///////function to create a  task_schedule
@@ -61,6 +69,10 @@ public class TaskScheduledService {
         if( taskScheduledRequest.getBeginning().after(taskScheduledRequest.getEnd())) {
             throw new RuntimeException("check the deviation between the beginning date and the end date !!");
         }
+
+
+        this.sendNotification(taskScheduledRequest , e , null);
+
         /////make the task_schedule registration
         return  taskScheduledRepository.save( new TaskScheduled(
                     t , ///taskInserted
@@ -91,6 +103,7 @@ public class TaskScheduledService {
         Content c = contentRepository.findById(t.getContent())
                 .orElseThrow(()-> new ContentNotFoundException("content not found !!"));
 
+        this.sendNotification(t , e , id);
 
         if(t.getBeginning().after(t.getEnd()))
         {
@@ -102,7 +115,10 @@ public class TaskScheduledService {
         taskScheduled.setStatus(t.isStatus());
         taskScheduled.setBeginning(t.getBeginning());
         taskScheduled.setEnd(t.getEnd());
+
+
         return  taskScheduledRepository.save(taskScheduled );
+
 
 
 
@@ -144,6 +160,51 @@ public class TaskScheduledService {
         return this.taskScheduledRepository.sumTaskDid(employee);
     }
 
+
+
+
+
+
+
+    public void sendNotification(TaskScheduledRequest t , Employee e , Long id_task){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        if(!t.isStatus() && id_task == null){
+            this.notificationRepository.save(
+                    new Notification(
+                            "Vous avez programmé une tache qui doit etre achevée au plus tard le "+t.getEnd() ,
+                            e ,
+                            t.getBeginning() ,
+                            "programmation de tache"
+                    )
+            );
+        } else  if (!t.isStatus()) {
+            this.notificationRepository.save(
+                    new Notification(
+                            "Vous avez modifié la programmation d' une tache qui doit etre achevée au plus tard le  "+t.getEnd() ,
+                            e ,
+                             null,
+                            "programmation de tache"
+                    )
+            );
+        }else{
+
+            Optional<TaskInserted> ti = this.taskInsertedRepository.findById(t.getTaskInserted());
+
+            ti.ifPresent(taskInserted -> this.notificationRepository.save(
+                    new Notification(
+                            " Votre  " + taskInserted.getTask().getTask_name() + " débuté(e) le " +
+                                    t.getBeginning() + " à été validé !!.... veuillez mettre a jour votre bulletin de paie !! ",
+                            e,
+                            null
+                            ,
+                            "virement"
+                    )
+            ));
+
+
+        }
+
+    }
 }
 
 

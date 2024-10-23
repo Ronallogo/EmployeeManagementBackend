@@ -3,6 +3,8 @@ package com.EmployeeManagment.Source.Pay_Stub.Service;
 
 import com.EmployeeManagment.Source.Employee.Entity.Employee;
 import com.EmployeeManagment.Source.Employee.Exception.EmployeeNotFoundException;
+import com.EmployeeManagment.Source.Notification.Entity.Notification;
+import com.EmployeeManagment.Source.Notification.Repository.NotificationRepository;
 import com.EmployeeManagment.Source.Pay_Stub.Entity.PayStub;
 import com.EmployeeManagment.Source.Pay_Stub.Entity.PayStubRequest;
 import com.EmployeeManagment.Source.Pay_Stub.Exception.PayStubNotFoundException;
@@ -35,6 +37,10 @@ public class PayStubService {
     @Autowired
     private TaskInsertedRepository taskInsertedRepository ;
 
+
+    @Autowired
+    private NotificationRepository notificationRepository ;
+
     ///  function to create  a PayStub
     public PayStub create(PayStubRequest payStubRequest){
          ////set the value nbrTask
@@ -42,7 +48,7 @@ public class PayStubService {
         //// check for bonus ... here we take the previous + 5000 in the case where
         // nbrTask would be a multiple of 5
 
-        if(nbrTask % 5 == 0 && nbrTask > 0) payStubRequest.setBonus(payStubRequest.getBonus() +  5000);
+        if(nbrTask % 5 == 0 && nbrTask > 0 ) payStubRequest.setBonus(payStubRequest.getBonus() +  5000);
 
         ////fetch list of all  id_task did for the employee
         List<Long> listTaskId = taskScheduledRepository.listTaskDid(payStubRequest.getEmployee());
@@ -88,13 +94,24 @@ public class PayStubService {
         //// check for bonus ... here we take the previous + 5000 in the case where
         // nbrTask would be a multiple of 5
 
-        if(nbrTask % 5 == 0 && nbrTask > 0) payStubRequest.setBonus(payStubRequest.getBonus() +  5000);
+        if(nbrTask % 5 == 0 && nbrTask > 0 && !Objects.equals(oldRegister.getNbrTasks(),  nbrTask)) {
+            payStubRequest.setBonus(payStubRequest.getBonus() +  5000)  ;
+            this.notificationRepository.save(
+                    new Notification(
+                            "  Vous avez reçu un bonus veuillez mettre a jour votre bulletin !!!" ,
+                            e ,
+                            null,
+                            "virement"
+                    )
+            );
+
+        }
 
         ////fetch list of all  id_task did for the employee
         List<Long> listTaskId = taskScheduledRepository.listTaskDidForPayStub(payStubRequest.getEmployee());
         List<TaskScheduled> list = taskScheduledRepository.findAllById(listTaskId);
         /// set the total amount
-        Integer totalAmount =    this.FindAmountForEdit(list) ;
+        Integer totalAmount =    this.FindAmountForEdit(list) + payStubRequest.getBonus() ;
 
 
         System.out.print("une fois encore "+totalAmount);
@@ -162,26 +179,16 @@ public class PayStubService {
         else throw  new PositionNotFoundException(" this pay_stub  does not exist is maybe already  deleted !!");
     }
 
-
     public List<PayStub> search(String keyword){
         return this.payStubRepository.searchByEmployee(keyword);
     }
     public Optional<PayStub> searchById(Long id){
         return this.payStubRepository.searchByEmployeeId(id);
     }
-
-
     public PayStub getPayStubForOneEmployee(String email){
         return this.payStubRepository.getForOne(email)
                 .orElseThrow(()-> new PayStubNotFoundException("pay_stub not found"));
     }
-
-    public Integer FindExtraLength(List<Long> firtList , List<Long> secondList){
-            return firtList.size() - secondList.size() ;
-    }
-
-
-
 
     public PayStub refresh(Long id ,PayStubRequest payStubRequest){
 
@@ -200,7 +207,14 @@ public class PayStubService {
         this.taskScheduledRepository.deleteAllById(listTaskId);
         ////make refresh
 
-
+        this.notificationRepository.save(
+                new Notification(
+                        " Votre payement est près a etre effectué ..... Veuillez imprimé votre bulletin!!!" ,
+                        e ,
+                        null,
+                        "virement"
+                )
+        );
         return payStubRepository.save(new PayStub(
                     id ,
                     30000,

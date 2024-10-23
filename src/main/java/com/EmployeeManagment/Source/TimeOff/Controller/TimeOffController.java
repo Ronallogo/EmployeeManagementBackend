@@ -111,7 +111,7 @@ public class TimeOffController {
         return  timeOffService.search(keyword);
     }
     @GetMapping(value = "/searchByIdEmployee/{keyword}")
-    public Optional<TimeOff> searchTimeOffById(@PathVariable Long keyword){
+    public List<TimeOff> searchTimeOffById(@PathVariable Long keyword){
         return  timeOffService.searchByIdEmployee(keyword);
     }
 

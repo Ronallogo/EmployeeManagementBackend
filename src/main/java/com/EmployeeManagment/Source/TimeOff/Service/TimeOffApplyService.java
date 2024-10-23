@@ -4,6 +4,8 @@ package com.EmployeeManagment.Source.TimeOff.Service;
 import com.EmployeeManagment.Source.Employee.Entity.Employee;
 import com.EmployeeManagment.Source.Employee.Exception.EmployeeNotFoundException;
 import com.EmployeeManagment.Source.Employee.Repository.EmployeeRepository;
+import com.EmployeeManagment.Source.Notification.Entity.Notification;
+import com.EmployeeManagment.Source.Notification.Repository.NotificationRepository;
 import com.EmployeeManagment.Source.TimeOff.Entity.TimeOffApply;
 import com.EmployeeManagment.Source.TimeOff.Entity.TimeOffApplyRequest;
 import com.EmployeeManagment.Source.TimeOff.Exception.TimeOffApplyNotFoundException;
@@ -22,6 +24,9 @@ public class TimeOffApplyService {
     @Autowired
     private EmployeeRepository employeeRepository ;
 
+    @Autowired
+    private NotificationRepository notificationRepository ;
+
 
     public TimeOffApply create(TimeOffApplyRequest t){
 
@@ -35,6 +40,15 @@ public class TimeOffApplyService {
         if( t.getBeginning().after(t.getEnd())) {
             throw new RuntimeException("check the deviation between the beginning date and the end date !!");
         }
+
+        this.notificationRepository.save(
+                new Notification(
+                        " Votre demande de congé a été reçu !!! ... La réponse vous sera communiqué très bientot" ,
+                        e ,
+                        t.getBeginning() ,
+                        "demande de congé"
+                )
+        );
 
         return  this.timeOffApplyRepository.save(
                 new TimeOffApply(
@@ -75,6 +89,18 @@ public class TimeOffApplyService {
         ta.setEmployee(e);
         ta.setValidate(t.isValidate());
         ta.setType(t.getType());
+
+        this.notificationRepository.save(
+                new Notification(
+
+                        (t.isValidate())?" Votre demande de congé a été etudié et a été validé !!! ...." +
+                                " Je vous souhaite un excellent congé  User @"+e.getName() :
+                                "Votre demande de congé a été etudié et n'a été validé malheureusement " ,
+                        e ,
+                        t.getBeginning() ,
+                        "demande de congé"
+                )
+        );
         return  this.timeOffApplyRepository.save(ta);
 
 

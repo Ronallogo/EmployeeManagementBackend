@@ -120,7 +120,7 @@ public class TimeOffService {
     public List<TimeOff> search(String keyword){
         return TimeOffRepository.search(keyword);
     }
-    public Optional<TimeOff> searchByIdEmployee(Long keyword){
+    public List<TimeOff> searchByIdEmployee(Long keyword){
         return TimeOffRepository.searchByIdEmployee(keyword);
     }
 
