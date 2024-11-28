@@ -26,6 +26,8 @@ public class TaskInsertedRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
     private Date date_insertion ;
     private Integer gain_task_post ;
+    private String task_type ;
+    private  int nbrPerson ;
 
     TaskInsertedRequest(Long position , Long task , Date date , Integer gain_task_post){
             this.setTask(task);

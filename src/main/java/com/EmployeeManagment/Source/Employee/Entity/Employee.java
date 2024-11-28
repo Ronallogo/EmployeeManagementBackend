@@ -4,9 +4,9 @@ import com.EmployeeManagment.Source.Absences.Entity.Absence;
 import com.EmployeeManagment.Source.Notification.Entity.Notification;
 import com.EmployeeManagment.Source.Pay_Stub.Entity.PayStub;
 import com.EmployeeManagment.Source.Position.Entity.Position;
+import com.EmployeeManagment.Source.Repartition.Entities.Repartition;
 import com.EmployeeManagment.Source.Security.entities.User;
 import com.EmployeeManagment.Source.Task_Scheduled.Entity.TaskScheduled;
-import com.EmployeeManagment.Source.TimeOff.Entity.TimeOff;
 import com.EmployeeManagment.Source.TimeOff.Entity.TimeOffApply;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -14,7 +14,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -53,10 +52,6 @@ public class Employee  implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<TaskScheduled> taskScheduledList;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TimeOffApply> timeOffApplies;
 
     @JsonIgnore
@@ -70,6 +65,10 @@ public class Employee  implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Notification> notification;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Repartition> repartition;
     /////// constructor personalize for creation
     public Employee(
             String name ,

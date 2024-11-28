@@ -54,7 +54,7 @@ public class ValidationPdfModel {
             table.addCell(task.getTaskInserted().getTask().getTask_name()) ;
             table.addCell(task.getBeginning().toString()) ;
             table.addCell(task.getEnd().toString()) ;
-            table.addCell(task.getEmployee().getName() + " "+ task.getEmployee().getSurname());
+          //  table.addCell(task.getEmployee().getName() + " "+ task.getEmployee().getSurname());
 
 
         }

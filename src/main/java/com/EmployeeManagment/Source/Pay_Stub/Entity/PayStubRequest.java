@@ -24,6 +24,8 @@ public class PayStubRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
     private   Date paymentDate;
     private Long employee;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
+    private Date dateUpdate ;
 
 
     public PayStubRequest(

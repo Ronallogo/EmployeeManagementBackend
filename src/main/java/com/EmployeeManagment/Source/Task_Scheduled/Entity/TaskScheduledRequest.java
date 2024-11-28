@@ -23,27 +23,27 @@ public class TaskScheduledRequest {
 
     private Long taskInserted ;
 
-    private Long employee ;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
     private Date beginning ;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
     private Date end ;
     private boolean status ;
-
+    private int nbrPerson ;
+    private String type;
     private Long content ;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
+    private Date dateUpdate ;
 
 
 
     public TaskScheduledRequest(
          Long taskInserted ,
-         Long employee ,
          Date beginning ,
          Date end ,
          boolean status ,
          Long content
     ){
         this.setTaskInserted(taskInserted);
-        this.setEmployee(employee);
         this.setBeginning(beginning);
         this.setEnd(end);
         this.setStatus(status);

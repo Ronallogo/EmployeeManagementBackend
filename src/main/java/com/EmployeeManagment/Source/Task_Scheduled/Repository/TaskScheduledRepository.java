@@ -4,7 +4,6 @@ import com.EmployeeManagment.Source.Task_Scheduled.Entity.TaskScheduled;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.scheduling.config.Task;
 
 import java.util.List;
 
@@ -41,6 +40,44 @@ public interface TaskScheduledRepository extends JpaRepository<TaskScheduled, Lo
 
     @Query(value = "SELECT * FROM task_scheduled WHERE status = 1" , nativeQuery = true)
     List<TaskScheduled> listTaskValidate();
+
+
+    @Query(value = "SELECT ts.id FROM task_scheduled ts " +
+            "INNER JOIN task_inserted ti ON ts.task_inserted_id = ti.id " +
+            "INNER JOIN task t ON ti.task_id = t.id WHERE t.task_name LIKE %:keyword%", nativeQuery = true)
+    List<Long> fetchTaskScheduled(@Param("keyword") String keyword);
+
+    @Query(value = "SELECT  ts.id , ts.beginning , ts.end , ts.status , ts.content_id , ts.task_inserted_id , ts.nbr_person , ts.type , ts.check_for_payement FROM task_scheduled ts " +
+            "INNER JOIN task_inserted ti ON ts.task_inserted_id = ti.id " +
+            "INNER JOIN task t ON ti.task_id = t.id WHERE t.task_name LIKE %:keyword%", nativeQuery = true)
+    List<TaskScheduled> searchTaskScheduled(@Param("keyword") String keyword);
+    @Query(value = "SELECT  ti.gain_task_post FROM task_scheduled ts " +
+            "INNER JOIN task_inserted ti ON ts.task_inserted_id = ti.id " +
+            " WHERE ts.id  = :id_task", nativeQuery = true)
+     Integer getAmountTaskScheduled(@Param("id_task") Long id_task);
+
+
+    @Query(value = "SELECT ts.id , ts.beginning , ts.end , ts.status , ts.content_id , ts.task_inserted_id ," +
+            " ts.nbr_person , ts.type , ts.check_for_payement FROM task_scheduled ts " +
+            "INNER JOIN task_inserted ti ON ts.task_inserted_id = ti.id " +
+            "INNER JOIN position p ON ti.position_id = p.id WHERE p.id = :position_id ;", nativeQuery = true)
+    List<TaskScheduled> fetchTaskScheduled_2(@Param("position_id") Long position_id);
+
+
+
+    @Query(value = "SELECT ts.id , ts.beginning , ts.end , ts.status , ts.content_id , ts.task_inserted_id ," +
+            " ts.nbr_person , ts.type , ts.check_for_payement FROM task_scheduled ts " +
+            "INNER JOIN repartition r ON ts.id = r.task_scheduled_id " +
+            "  WHERE r.employee_id = :employee_id AND ts.status = true AND ts.check_for_payement = false ;", nativeQuery = true)
+    List<TaskScheduled> fetchTaskScheduled_3(@Param("employee_id") Long employee_id);
+
+    @Query(value = "SELECT ts.id FROM task_scheduled ts " +
+            "INNER JOIN task_inserted ti ON ts.task_inserted_id = ti.id " +
+            "INNER JOIN position p ON ti.position_id = p.id;", nativeQuery = true)
+    List<Long> fetchTaskScheduled_3();
+
+
+
 
 
 

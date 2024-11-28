@@ -4,11 +4,13 @@ package com.EmployeeManagment.Source.Task_Scheduled.Service;
 import com.EmployeeManagment.Source.Content.Entity.Content;
 import com.EmployeeManagment.Source.Content.Exception.ContentNotFoundException;
 import com.EmployeeManagment.Source.Content.Repository.ContentRepository;
-import com.EmployeeManagment.Source.Employee.Entity.Employee;
 import com.EmployeeManagment.Source.Employee.Exception.EmployeeNotFoundException;
 import com.EmployeeManagment.Source.Employee.Repository.EmployeeRepository;
 import com.EmployeeManagment.Source.Notification.Entity.Notification;
 import com.EmployeeManagment.Source.Notification.Repository.NotificationRepository;
+import com.EmployeeManagment.Source.Pay_Stub.Exception.PayStubNotFoundException;
+import com.EmployeeManagment.Source.Pay_Stub.Repository.PayStubRepository;
+import com.EmployeeManagment.Source.Repartition.Repository.RepartitionRepository;
 import com.EmployeeManagment.Source.Task_Inserted.Entity.TaskInserted;
 import com.EmployeeManagment.Source.Task_Inserted.Exception.TaskInsertedNotFoundException;
 import com.EmployeeManagment.Source.Task_Inserted.Repository.TaskInsertedRepository;
@@ -21,11 +23,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -33,6 +33,9 @@ public class TaskScheduledService {
 
     @Autowired
     private EmployeeRepository employeeRepository ;
+
+    @Autowired
+    private PayStubRepository payStubRepository ;
 
     @Autowired
     private TaskInsertedRepository taskInsertedRepository ;
@@ -44,15 +47,15 @@ public class TaskScheduledService {
     private   TaskScheduledRepository taskScheduledRepository ;
 
     @Autowired
+    private RepartitionRepository repartitionRepository ;
+
+    @Autowired
     private NotificationRepository notificationRepository ;
 
 
     ///////function to create a  task_schedule
-
     public TaskScheduled create(TaskScheduledRequest taskScheduledRequest){
-        /////fetch the employee
-        Employee e = employeeRepository.findById(taskScheduledRequest.getEmployee())
-                .orElseThrow(()-> new EmployeeNotFoundException("employee not found !!"));
+
         ///fetch taskInserted
         TaskInserted  t = taskInsertedRepository.findById(taskScheduledRequest.getTaskInserted())
                 .orElseThrow(()-> new TaskInsertedNotFoundException("task not insert !!!"));
@@ -61,7 +64,7 @@ public class TaskScheduledService {
         Content c = contentRepository.findById(taskScheduledRequest.getContent())
                 .orElseThrow(()-> new ContentNotFoundException("content not found !!"));
 
-        if(c.getStatus() == "publié"){
+        if(Objects.equals(c.getStatus(), "publié")){
             throw new RuntimeException("this content is already published !!!");
         }
 
@@ -71,31 +74,24 @@ public class TaskScheduledService {
         }
 
 
-        this.sendNotification(taskScheduledRequest , e , null);
-
         /////make the task_schedule registration
-        return  taskScheduledRepository.save( new TaskScheduled(
-                    t , ///taskInserted
-                    e  ,////employee
-                    taskScheduledRequest.getBeginning() , //// beginning date
-                    taskScheduledRequest.getEnd() ,////end date
-                    c ////content
-
-                )
-        );
+        return  taskScheduledRepository.save(
+                TaskScheduled.builder()
+                        .taskInserted(t)
+                        .beginning(taskScheduledRequest.getBeginning())
+                        .end(taskScheduledRequest.getEnd())
+                        .content(c)
+                        .type(taskScheduledRequest.getType())
+                        .nbrPerson(taskScheduledRequest.getNbrPerson())
+                        .status(false)
+                .build());
     }
-
-
     /////function for update task_schedule
-
     public  TaskScheduled edit( Long id , TaskScheduledRequest t){
 
         TaskScheduled taskScheduled = this.taskScheduledRepository.findById(id)
                 .orElseThrow(()-> new TaskScheduledNotFoundException("taskScheduled not found"));
-        /////check the employee
-        Employee e = employeeRepository.findById(t.getEmployee())
-                .orElseThrow(()-> new EmployeeNotFoundException("employee not found !!"));
-        ///check taskInserted
+
         TaskInserted  task = taskInsertedRepository.findById(t.getTaskInserted())
                 .orElseThrow(()-> new TaskInsertedNotFoundException("task not insert !!!"));
         //// check content
@@ -103,21 +99,23 @@ public class TaskScheduledService {
         Content c = contentRepository.findById(t.getContent())
                 .orElseThrow(()-> new ContentNotFoundException("content not found !!"));
 
-        this.sendNotification(t , e , id);
+        if(t.isStatus() && !taskScheduled.isCheckForPayement()){
+            this.payProgressInValidation(id , t);
+        }
 
         if(t.getBeginning().after(t.getEnd()))
         {
             throw new RuntimeException("check the deviation between the beginning date and the end date !!");
-        }  /////make the task_schedule updating
+        }
+        /////make the task_schedule updating
         taskScheduled.setTaskInserted(task);
-        taskScheduled.setEmployee(e);
         taskScheduled.setContent(c);
         taskScheduled.setStatus(t.isStatus());
         taskScheduled.setBeginning(t.getBeginning());
         taskScheduled.setEnd(t.getEnd());
-
-
-        return  taskScheduledRepository.save(taskScheduled );
+        taskScheduled.setType(t.getType());
+        taskScheduled.setNbrPerson(t.getNbrPerson());
+        return  taskScheduledRepository.save(taskScheduled);
 
 
 
@@ -125,16 +123,12 @@ public class TaskScheduledService {
     }
     ////find all task_schedule
     public List<TaskScheduled> all(){return taskScheduledRepository.findAll() ;}
-
-
     //// get one task_scheduled
     public TaskScheduled get(Long id){
         return taskScheduledRepository.findById(id)
                 .orElseThrow(()-> new TaskScheduledNotFoundException("task not scheduled")) ;
     }
-
     ///// delete a taskSchedule
-
     public boolean delete(Long id){
         ////check if this task schedule exist or throw an entityNotFound Error
         if( taskScheduledRepository.existsById(id)){
@@ -152,59 +146,64 @@ public class TaskScheduledService {
         }
     }
 
-    public List<TaskScheduled> taskDidByOne(Long employee){
-        return  taskScheduledRepository.listTaskDidForOne(employee);
-
-    }
-    public Integer nbrTaskForOne(Long employee){
-        return this.taskScheduledRepository.sumTaskDid(employee);
+    public List<TaskScheduled> searchTaskScheduled(String keyword){
+        return this.taskScheduledRepository.searchTaskScheduled(keyword);
     }
 
+    public List<TaskScheduled> fetchTaskByPositionId(Long position_id){
+        return this.taskScheduledRepository.fetchTaskScheduled_2(position_id);
+    }
+
+    public List<TaskScheduled> fetchTaskByEmployeeId(Long employee_id){
+        return this.taskScheduledRepository.fetchTaskScheduled_3(employee_id);
+    }
 
 
+    public void payProgressInValidation(Long id_task , TaskScheduledRequest request){
+        var task = this.taskScheduledRepository.findById(id_task)
+                .orElseThrow(()-> new RuntimeException("taskScheduled not found"));
 
 
+        List<Long> listEmployee = this.repartitionRepository.SearchByEmployee_taskId(id_task);
 
-
-    public void sendNotification(TaskScheduledRequest t , Employee e , Long id_task){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        if(!t.isStatus() && id_task == null){
-            this.notificationRepository.save(
-                    new Notification(
-                            "Vous avez programmé une tache qui doit etre achevée au plus tard le "+t.getEnd() ,
-                            e ,
-                            t.getBeginning() ,
-                            "programmation de tache"
-                    )
-            );
-        } else  if (!t.isStatus()) {
-            this.notificationRepository.save(
-                    new Notification(
-                            "Vous avez modifié la programmation d' une tache qui doit etre achevée au plus tard le  "+t.getEnd() ,
-                            e ,
-                             null,
-                            "programmation de tache"
-                    )
-            );
-        }else{
-
-            Optional<TaskInserted> ti = this.taskInsertedRepository.findById(t.getTaskInserted());
-
-            ti.ifPresent(taskInserted -> this.notificationRepository.save(
-                    new Notification(
-                            " Votre  " + taskInserted.getTask().getTask_name() + " débuté(e) le " +
-                                    t.getBeginning() + " à été validé !!.... veuillez mettre a jour votre bulletin de paie !! ",
-                            e,
-                            null
-                            ,
-                            "virement"
-                    )
-            ));
-
-
+        for(Long id : listEmployee){
+            this.sendNotificationAndPay(id , task , request.getDateUpdate());
         }
+        task.setCheckForPayement(true);
+        this.taskScheduledRepository.save(task);
 
     }
+
+    public void sendNotificationAndPay(Long employee_id , TaskScheduled task , Date date){
+        var e = this.employeeRepository.findById(employee_id)
+                .orElseThrow( ()-> new EmployeeNotFoundException("employee not found"));
+
+       var pay = this.payStubRepository.getForOne(e.getEmail())
+               .orElseThrow(()-> new PayStubNotFoundException("payStub not found"));
+
+       pay.setNbrTasks(pay.getNbrTasks() + 1 );
+       pay.setAmount(pay.getAmount() + this.taskScheduledRepository.getAmountTaskScheduled(task.getId()));
+       var bonus = pay.getAmount() /10 ;
+       pay.setAmount(pay.getAmount() + pay.getBonus());
+       pay.setBonus(bonus);
+       this.payStubRepository.save(pay);
+
+
+
+       this.notificationRepository.save(Notification.builder()
+               .views(false)
+               .employee(e)
+               .date(date)
+               .type("virement").message("User @"+e.getName()+" la tache :'"+task.getTaskInserted().getTask().getTask_name()
+               +"' a été validé  et un virement a été effectué....Veuillez mettre à jour votre bulletin de paie ."
+               )
+               .build());
+
+    }
+
+
+
+
 }
 
 

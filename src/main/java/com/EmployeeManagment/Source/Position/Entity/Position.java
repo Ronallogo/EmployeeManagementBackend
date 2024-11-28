@@ -27,4 +27,5 @@ public class Position implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "position", cascade = CascadeType.ALL)
     private List<TaskInserted> taskInsertedList ;
+
 }

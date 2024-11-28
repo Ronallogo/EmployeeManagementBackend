@@ -229,6 +229,11 @@ public class AuthenticationService {
 
     }
 
+    public boolean checkValidityToken(AuthenticationResponse authenticationResponse){
+            var token =   this.tokenRepository.findByToken(authenticationResponse.getAccessToken());
+            return  token.isPresent() && !token.get().isRevoked() && !token.get().isExpired();
+    }
+
 }
 
 

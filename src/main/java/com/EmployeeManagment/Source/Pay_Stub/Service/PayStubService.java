@@ -43,91 +43,35 @@ public class PayStubService {
 
     ///  function to create  a PayStub
     public PayStub create(PayStubRequest payStubRequest){
-         ////set the value nbrTask
-        Integer nbrTask = taskScheduledRepository.sumTaskDid(payStubRequest.getEmployee()) ;
-        //// check for bonus ... here we take the previous + 5000 in the case where
-        // nbrTask would be a multiple of 5
-
-        if(nbrTask % 5 == 0 && nbrTask > 0 ) payStubRequest.setBonus(payStubRequest.getBonus() +  5000);
-
-        ////fetch list of all  id_task did for the employee
-        List<Long> listTaskId = taskScheduledRepository.listTaskDid(payStubRequest.getEmployee());
-
-        /// set the total amount
-        Integer totalAmount = this.FindAmount(listTaskId) + payStubRequest.getAmount();
-
         ////  fetch the  employee
         Employee e = employeeRepository.findById(payStubRequest.getEmployee())
                 .orElseThrow(()-> new EmployeeNotFoundException("this employee not exist !!!"));
-
-
-        PayStub p = new PayStub(
-               payStubRequest.getPaymentDate() ,
-               payStubRequest.getBonus() ,
-               e,
-               totalAmount ,
-               nbrTask );
-
-
         return payStubRepository.save(new PayStub(
                 payStubRequest.getPaymentDate() ,
-                payStubRequest.getBonus() ,
+                 300 ,
                 e,
-                totalAmount ,
-                nbrTask
+                 3000,
+                 0
                 )
         );
     }
 
     public PayStub edit(Long id ,PayStubRequest payStubRequest){
 
-            PayStub oldRegister = this.payStubRepository.findById(id).orElseThrow();
-        ////check the employee
+        var payStub = this.payStubRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("payStub not found"));
         Employee e = employeeRepository.findById(payStubRequest.getEmployee())
                 .orElseThrow(()-> new EmployeeNotFoundException("this employee not exist !!!"));
 
-
-        ////set the value nbrTask
-        Integer nbrTask = taskScheduledRepository.sumTaskDidForPayStub(payStubRequest.getEmployee()) ;
-
-        System.out.print("nombre de tache ++" + nbrTask );
-        //// check for bonus ... here we take the previous + 5000 in the case where
-        // nbrTask would be a multiple of 5
-
-        if(nbrTask % 5 == 0 && nbrTask > 0 && !Objects.equals(oldRegister.getNbrTasks(),  nbrTask)) {
-            payStubRequest.setBonus(payStubRequest.getBonus() +  5000)  ;
-            this.notificationRepository.save(
-                    new Notification(
-                            "  Vous avez reçu un bonus veuillez mettre a jour votre bulletin !!!" ,
-                            e ,
-                            null,
-                            "virement"
-                    )
-            );
-
-        }
-
-        ////fetch list of all  id_task did for the employee
-        List<Long> listTaskId = taskScheduledRepository.listTaskDidForPayStub(payStubRequest.getEmployee());
-        List<TaskScheduled> list = taskScheduledRepository.findAllById(listTaskId);
-        /// set the total amount
-        Integer totalAmount =    this.FindAmountForEdit(list) + payStubRequest.getBonus() ;
-
-
-        System.out.print("une fois encore "+totalAmount);
         ////make updating
-        return payStubRepository.save(new PayStub(
-                id ,
-                 totalAmount,
-                nbrTask,
-                payStubRequest.getBonus(),
-                payStubRequest.getPaymentDate() ,
-                e
-            )
+        payStub.setAmount(payStubRequest.getAmount());
+        payStub.setNbrTasks(payStubRequest.getNbrTasks());
+        payStub.setBonus( payStubRequest.getBonus());
+        payStub.setPaymentDate(payStubRequest.getPaymentDate());
+        return payStubRepository.save( payStub);
 
-        );
+
     }
-
     /////find all payStub
     public List<PayStub> all(){
         return  payStubRepository.findAll() ;
@@ -192,26 +136,14 @@ public class PayStubService {
 
     public PayStub refresh(Long id ,PayStubRequest payStubRequest){
 
-        PayStub oldRegister = this.payStubRepository.findById(id).orElseThrow(()->new PayStubNotFoundException("payStub not Found"));
-        ////check the employee
         Employee e = employeeRepository.findById(payStubRequest.getEmployee())
                 .orElseThrow(()-> new EmployeeNotFoundException("this employee not exist !!!"));
-
-
-
-
-
-        ////fetch list of all  id_task did for the employee
-        List<Long> listTaskId = taskScheduledRepository.listTaskDidForPayStub(payStubRequest.getEmployee());
-        /////delete all task schedule by this employee
-        this.taskScheduledRepository.deleteAllById(listTaskId);
-        ////make refresh
 
         this.notificationRepository.save(
                 new Notification(
                         " Votre payement est près a etre effectué ..... Veuillez imprimé votre bulletin!!!" ,
                         e ,
-                        null,
+                        payStubRequest.getDateUpdate(),
                         "virement"
                 )
         );

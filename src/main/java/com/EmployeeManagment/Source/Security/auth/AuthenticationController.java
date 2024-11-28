@@ -55,6 +55,11 @@ public class AuthenticationController {
         var e =  this.service.findUser(email) ;
         return ResponseEntity.ok(e);
     }
+    @GetMapping("/validity")
+    public ResponseEntity<?> findUser(@RequestBody  AuthenticationResponse request){
+        var e =  this.service.checkValidityToken(request);
+        return ResponseEntity.ok(e);
+    }
 
     @PutMapping("/editWithPassword/{id}")
     public ResponseEntity<AuthenticationResponse> editUser(@PathVariable Long id ,    @RequestBody RegisterRequest request){
@@ -73,6 +78,8 @@ public class AuthenticationController {
         var e =  this.service.delete(id);
         return ResponseEntity.ok(e);
     }
+
+
 
 
 

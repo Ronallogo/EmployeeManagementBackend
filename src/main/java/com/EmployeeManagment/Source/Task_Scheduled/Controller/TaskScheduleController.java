@@ -58,12 +58,27 @@ public class TaskScheduleController {
         List<TaskScheduled> listTaskScheduled = TaskScheduledService.all() ;
         return new ResponseEntity<List<TaskScheduled>>(listTaskScheduled , HttpStatus.OK);
     }
-    /////endpoint allowing to get all TaskScheduled for an employee
-    @GetMapping(value = "/taskForOne/{employee_id}")
-    public ResponseEntity<List<TaskScheduled>> allTaskScheduledForOne(@PathVariable Long employee_id){
-        List<TaskScheduled> listTaskScheduled = TaskScheduledService.taskDidByOne(employee_id) ;
-        return new ResponseEntity<List<TaskScheduled>>(listTaskScheduled , HttpStatus.OK);
+
+    @GetMapping(value = "/searchTaskScheduled/{keyword}")
+    public ResponseEntity<List<TaskScheduled>> searchTaskScheduled(@PathVariable String keyword){
+        List<TaskScheduled> listTaskScheduled = TaskScheduledService.searchTaskScheduled(keyword) ;
+        return new ResponseEntity<>(listTaskScheduled, HttpStatus.OK);
     }
+
+
+    @GetMapping(value = "/searchTaskByPositionId/{position_id}")
+    public ResponseEntity<List<TaskScheduled>> searchTaskScheduledByPositionId(@PathVariable Long position_id){
+        List<TaskScheduled> listTaskScheduled = TaskScheduledService.fetchTaskByPositionId(position_id) ;
+        return new ResponseEntity<>(listTaskScheduled, HttpStatus.OK);
+    }
+    /////endpoint allowing to get all TaskScheduled for an employee taskForOne
+
+    @GetMapping(value = "/taskForOne/{employee_id}")
+    public ResponseEntity<List<TaskScheduled>> searchTaskScheduledByEmployeeId(@PathVariable Long employee_id){
+        List<TaskScheduled> listTaskScheduled = TaskScheduledService.fetchTaskByEmployeeId(employee_id) ;
+        return new ResponseEntity<>(listTaskScheduled, HttpStatus.OK);
+    }
+
 
 
     /////endpoint allowing to update  one TaskScheduled by id
@@ -97,6 +112,11 @@ public class TaskScheduleController {
         // Call your method to write the PDF content to the response output stream
         this.taskScheduledPdfModel.export(response);
     }
+
+
+
+
+
    /* @GetMapping(value = "/validation/report/pdf")
     public void reportTaskPdf(HttpServletResponse response) throws IOException {
         response.setContentType("application/pdf");
