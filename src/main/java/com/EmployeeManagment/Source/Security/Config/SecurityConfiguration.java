@@ -43,6 +43,7 @@ public class SecurityConfiguration {
             "/api/auth/employee_manager/timeOff/**",
             "/api/auth/employee_manager/repartition/**",
 
+
     };
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter ;

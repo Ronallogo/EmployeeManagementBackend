@@ -1,12 +1,13 @@
 package com.EmployeeManagment.Source.Employee.Entity;
 
 import com.EmployeeManagment.Source.Absences.Entity.Absence;
+import com.EmployeeManagment.Source.Message.MessageReceived;
+import com.EmployeeManagment.Source.Message.MessageSended;
 import com.EmployeeManagment.Source.Notification.Entity.Notification;
 import com.EmployeeManagment.Source.Pay_Stub.Entity.PayStub;
 import com.EmployeeManagment.Source.Position.Entity.Position;
 import com.EmployeeManagment.Source.Repartition.Entities.Repartition;
 import com.EmployeeManagment.Source.Security.entities.User;
-import com.EmployeeManagment.Source.Task_Scheduled.Entity.TaskScheduled;
 import com.EmployeeManagment.Source.TimeOff.Entity.TimeOffApply;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -69,6 +70,12 @@ public class Employee  implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Repartition> repartition;
+    @JsonIgnore
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<MessageSended>  message_send;
+    @JsonIgnore
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<MessageReceived>  message_received;
     /////// constructor personalize for creation
     public Employee(
             String name ,
