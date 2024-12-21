@@ -18,6 +18,7 @@ public class MessageSended {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id ;
+    private String chatId ;
     private String content;
     @Lob
     @Column(name = "file", columnDefinition = "LONGBLOB")

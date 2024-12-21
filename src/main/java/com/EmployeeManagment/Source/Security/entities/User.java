@@ -1,5 +1,7 @@
 package com.EmployeeManagment.Source.Security.entities;
 
+import com.EmployeeManagment.Source.Message.UserMessage.UserMessage;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,6 +30,11 @@ public class User implements UserDetails {
     private String password ;
     @Enumerated(EnumType.STRING)
     private Roles role ;
+
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "userApp", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<UserMessage>  messages;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
