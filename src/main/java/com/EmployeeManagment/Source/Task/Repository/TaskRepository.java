@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface TaskRepository   extends JpaRepository<Task, Long> {
-    @Query(value = "SELECT * FROM task WHERE task_name LIKE %:keyword%  ", nativeQuery = true)
+    @Query(value = "SELECT * FROM task WHERE task_name LIKE % :keyword %  ", nativeQuery = true)
     List<Task> researchByName(@Param("keyword") String keyword);
 
 }

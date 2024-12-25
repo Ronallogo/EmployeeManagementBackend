@@ -1,8 +1,7 @@
 package com.EmployeeManagment.Source.Employee.Entity;
 
 import com.EmployeeManagment.Source.Absences.Entity.Absence;
-import com.EmployeeManagment.Source.Message.MessageReceived;
-import com.EmployeeManagment.Source.Message.MessageSended;
+import com.EmployeeManagment.Source.Message.Message;
 import com.EmployeeManagment.Source.Notification.Entity.Notification;
 import com.EmployeeManagment.Source.Pay_Stub.Entity.PayStub;
 import com.EmployeeManagment.Source.Position.Entity.Position;
@@ -70,12 +69,10 @@ public class Employee  implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Repartition> repartition;
+
     @JsonIgnore
-    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<MessageSended>  message_send;
-    @JsonIgnore
-    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<MessageReceived>  message_received;
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Message>  messages;
     /////// constructor personalize for creation
     public Employee(
             String name ,

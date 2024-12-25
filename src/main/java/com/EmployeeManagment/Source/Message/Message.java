@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name="message_received")
-public class MessageReceived implements Serializable {
+@Table(name="message")
+public class Message implements Serializable {
     @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id ;
     private String chatId ;
@@ -24,11 +24,11 @@ public class MessageReceived implements Serializable {
     @Column(name = "file", columnDefinition = "LONGBLOB")
     private byte[] file;
 
-    @Column(name = "sender", nullable = false)
-    private  String sender;
+    @Column(name = "recipient", nullable = false)
+    private  String recipient;
     @ManyToOne
-    @JoinColumn(name = "receiver", nullable = false  )
-    private Employee receiver;
+    @JoinColumn(name = "owner", nullable = false  )
+    private Employee owner;
     private String type;
     private String nature ;
     @Column(nullable = false)

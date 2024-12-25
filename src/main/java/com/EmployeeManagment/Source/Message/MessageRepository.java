@@ -10,7 +10,7 @@ import java.util.List;
 
 
 @EnableJpaRepositories
-public interface MessageReceivedRepository extends JpaRepository<MessageReceived, Long> {
+public interface MessageRepository extends JpaRepository<Message, Long> {
 
 
 
