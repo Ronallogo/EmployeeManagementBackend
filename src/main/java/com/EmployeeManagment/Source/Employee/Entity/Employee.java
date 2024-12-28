@@ -226,4 +226,8 @@ public class Employee  implements Serializable {
         this.setPhoto(photo);
     }
 
+
+    @Override
+    public String toString(){return "";}
+
 }

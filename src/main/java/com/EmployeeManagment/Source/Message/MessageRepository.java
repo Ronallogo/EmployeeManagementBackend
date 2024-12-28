@@ -22,26 +22,9 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
 
 
-    @Query(  value = " SELECT DISTINCT \n" +
-            "        ms.id, \n" +
-            "        ms.content, \n" +
-            "        ms.file, \n" +
-            "        ms.receiver, \n" +
-            "        ms.type, \n" +
-            "        ms.nature, \n" +
-            "        mr.sender\n" +
-            "    FROM \n" +
-            "        message_sended ms\n" +
-            "    JOIN \n" +
-            "        message_received mr \n" +
-            "    ON \n" +
-            "        mr.content = ms.content\n" +
-            "    WHERE \n" +
-            "        ms.sender = :id OR mr.receiver = :id\n" +
-            "    ORDER BY \n" +
-            "        ms.timestamp ASC"
+    @Query(  value = "SELECT * FROM message m WHERE m.chat_id LIKE :email% OR m.chat_id LIKE %:email;"
             , nativeQuery = true)
-    List<Tuple> findByReceiverOrderByTimestampAsc(@Param("id") Long id );
+    List<Tuple> findByReceiverOrderByTimestampAsc(@Param("email") String email );
 
 
 

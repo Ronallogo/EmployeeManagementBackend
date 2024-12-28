@@ -14,19 +14,15 @@ public class ChatRoomService {
     public Optional<String>
     getChatRoomId(
             String senderId,
-            String recipientId,
-            boolean createNewRoomIfNotExists
+            String recipientId
+
     ) {
         return chatRoomRepository
                 .findBySenderIdAndRecipientId(senderId, recipientId)
                 .map(ChatRoom::getChatId)
                 .or(() -> {
-                    if(createNewRoomIfNotExists) {
-                        var chatId = createChatId(senderId, recipientId);
-                        return Optional.of(chatId);
-                    }
-
-                    return  Optional.empty();
+                    var chatId = createChatId(senderId, recipientId);
+                    return Optional.of(chatId);
                 });
     }
 

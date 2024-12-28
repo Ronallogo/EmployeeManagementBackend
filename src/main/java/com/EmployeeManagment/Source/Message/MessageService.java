@@ -4,13 +4,14 @@ package com.EmployeeManagment.Source.Message;
 import com.EmployeeManagment.Source.Employee.Exception.EmployeeNotFoundException;
 import com.EmployeeManagment.Source.Employee.Repository.EmployeeRepository;
 import com.EmployeeManagment.Source.Message.ChatRoom.ChatRoomService;
-import com.EmployeeManagment.Source.Message.withSocketIo.SocketIOService;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -28,14 +29,16 @@ public class MessageService {
     private EmployeeRepository employeeRepository ;
 
 
+
+
     @Autowired
     private  ChatRoomService chatRoomService;
 
 
 
-    public void sendMessage(MessageDTO1 ms  ,byte[] file ) throws IOException {
+    public void sendMessage(MessageDTO ms  ,MultipartFile file  ) throws IOException {
         LocalDateTime now = LocalDateTime.now();
-        var chatId =  chatRoomService.getChatRoomId(ms.getSender() , ms.getReceiver() , false);
+        var chatId =  chatRoomService.getChatRoomId(ms.getSender() , ms.getReceiver());
 
 
         var e_sender = this.employeeRepository.findByEmail(ms.getSender())
@@ -46,16 +49,21 @@ public class MessageService {
         this.repository.save( Message.
             builder()
             .owner(e_sender)
-            .file(file != null  ? file: null)
+            .file(file != null  ? file.getBytes() : null)
             .type(file != null ?   "JOIN" : "MESSAGE")
             .nature("sent_message")
             .chatId(chatId.get())
             .content(ms.getContent()).recipient(e_received.getEmail()).timestamp(now)
             .build());
-
-
-
-
+        SseEmitter sse =  new SseEmitter();
+        try {
+            sse.send(SseEmitter.event()
+                    .name("server")
+                    .data(ResponseMsgServer.builder()
+                            .message("Message envoyé")
+                            .emailRecipient(ms.getReceiver())
+                            .build()));
+        } catch (IOException e) { sse.completeWithError(new RuntimeException("message sent"));  }
 
 
 
@@ -66,17 +74,16 @@ public class MessageService {
 
 
         var e = this.employeeRepository.findByEmail(email).orElseThrow(()->new EmployeeNotFoundException("Employee not found"));
-        return this.repository.findByReceiverOrderByTimestampAsc(e.getId())
+        return this.repository.findByReceiverOrderByTimestampAsc(e.getEmail())
                 .stream()
                 .map(tuple -> MessageDTO1.builder()
                         .id((Long)tuple.get("id"))
                         .content((String) tuple.get("content"))
-                        .sender((String) tuple.get("sender"))
+                        .sender(tuple.get("owner").toString())
                         .type((String) tuple.get("type"))
-                        .receiver((String) tuple.get("receiver"))
+                        .receiver( tuple.get("recipient").toString())
                         .file((byte[]) tuple.get("file"))
                         .nature((String) tuple.get("nature"))
-
                        .build()) .collect(Collectors.toList());
 
 
@@ -101,6 +108,8 @@ public class MessageService {
 
 
     }
+
+  //  public SseEmitter reponse
 
 
 

@@ -20,6 +20,7 @@ public class MessageDTO {
 
     private String content;
     private String sender;
+    private String chatId ;
     private String receiver;
     private String type ;
     private String nature ;
