@@ -1,12 +1,14 @@
 package com.EmployeeManagment.Source.Message;
 
 
+import com.EmployeeManagment.Source.Document.Document;
 import com.EmployeeManagment.Source.Employee.Entity.Employee;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,9 +22,7 @@ public class Message implements Serializable {
     private Long id ;
     private String chatId ;
     private String content;
-    @Lob
-    @Column(name = "file", columnDefinition = "LONGBLOB")
-    private byte[] file;
+
 
     @Column(name = "recipient", nullable = false)
     private  String recipient;
@@ -33,4 +33,10 @@ public class Message implements Serializable {
     private String nature ;
     @Column(nullable = false)
     private LocalDateTime timestamp;
+    private boolean delete_for_sender ;
+    private boolean delete_for_recipient ;
+
+
+    @OneToMany(mappedBy = "message", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    List<Document> documentList;
 }

@@ -17,6 +17,7 @@ public class SseService {
         this.emitters.add(emitter);
         emitter.onCompletion(() -> emitters.remove(emitter));
         emitter.onTimeout(() -> {
+            System.out.print("delai terminé");
             emitters.remove(emitter);
             emitter.complete();
         });

@@ -20,6 +20,8 @@ public class SseController {
     @GetMapping("/stream")
     public SseEmitter stream() {
         SseEmitter emitter = new SseEmitter();
+
+
         System.out.print("TimeOut : "+emitter.getTimeout());
 
         sseService.addEmitter(emitter);

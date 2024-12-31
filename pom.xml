@@ -31,20 +31,15 @@
 	</properties>
 	<dependencies>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-websocket</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.corundumstudio.socketio</groupId>
-			<artifactId>netty-socketio</artifactId>
-			<version>1.7.19</version>
-		</dependency>
+
+
 		<dependency>
 			<groupId>com.github.librepdf</groupId>
 			<artifactId>openpdf</artifactId>
 			<version>2.0.3</version>
 		</dependency>
+
+
 
 
 		<dependency>

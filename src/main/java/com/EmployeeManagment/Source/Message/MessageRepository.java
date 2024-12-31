@@ -22,9 +22,9 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
 
 
-    @Query(  value = "SELECT * FROM message m WHERE m.chat_id LIKE :email% OR m.chat_id LIKE %:email;"
+    @Query(  value = "SELECT * FROM message m WHERE m.chat_id LIKE :email% OR m.chat_id LIKE %:email ORDER BY id DESC;"
             , nativeQuery = true)
-    List<Tuple> findByReceiverOrderByTimestampAsc(@Param("email") String email );
+    List<Tuple> findByReceiverOrderByIdDesc(@Param("email") String email );
 
 
 

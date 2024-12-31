@@ -24,6 +24,8 @@ public class MessageDTO {
     private String receiver;
     private String type ;
     private String nature ;
+    private String file_name ;
+    private String extension ;
 
 
 

@@ -5,6 +5,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Lob;
 import lombok.*;
 
+import java.sql.Blob;
+
 
 @Getter
 @Setter
@@ -18,13 +20,18 @@ public class MessageDTO1 {
     private Long id ;
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    private byte[] file ;
+    private Blob file ;
     private String content;
     private String sender;
     private String chatId ;
     private String receiver;
+    private String name ;
     private String type ;
+    private String date ;
     private String nature ;
+    private String extension ;
+    private boolean delete_for_sender ;
+    private boolean delete_for_recipient ;
 
 
     public MessageDTO1(Long id, String sender, String receiver, String type, String nature , String c) {

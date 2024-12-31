@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,7 +43,7 @@ public class MessageController {
             @RequestPart(value="file" , required = false) MultipartFile file) throws IOException, InterruptedException {
 
         messageService.sendMessage(ms , file);
-        sseService.sendMessageToAllClients("message envoyé");
+
 
 
         return  new ResponseEntity<>(HttpStatus.OK) ;
@@ -53,17 +53,24 @@ public class MessageController {
 
 
     @GetMapping("/all/{email}")
-    public List<MessageDTO1> getMessages(@PathVariable String email){
+    public List<MessageDTO1> getMessages(@PathVariable String email) throws InterruptedException {
         return this.messageService.getMessages(email);
     }
 
-
-
-
-    @DeleteMapping("/delete/{id_ms}/{nature_message}")
-    public boolean delete(@PathVariable Long id_ms ,@PathVariable String nature_message){
-        return this.messageService.delete(id_ms , nature_message);
+    @GetMapping("/checkMessage/{email}")
+    public List<MessageDTO1> refreshMessages(@PathVariable String email) throws InterruptedException {
+        return this.messageService.refreshMessages(email);
     }
+
+
+
+
+    @DeleteMapping("/delete/{id_ms}/{email}")
+    public boolean delete(@PathVariable Long id_ms ,@PathVariable String email){
+        return this.messageService.delete(id_ms , email);
+    }
+
+
 
 
 
